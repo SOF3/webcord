@@ -1,0 +1,23 @@
+[package]
+name = "webcord"
+version = "0.1.0"
+authors = ["SOFe <sofe2038@gmail.com>"]
+edition = "2018"
+license = "Apache-2.0"
+repository = "https://github.com/SOF3/webcord"
+homepage = "https://github.com/SOF3/webcord"
+readme = "README.md"
+description = "Mirrors Discord chat logs on webpages in a searchable fashion"
+
+[dependencies]
+actix-files = "0.2.0-alpha.3"
+actix-web = "2.0.0-alpha.3"
+actix-rt = "*" # selected by actix-web
+config = "0.10.1"
+dirmod = "0.2.0-alpha.1"
+dotenv = "0.15.0"
+getset = "0.0.9"
+log = "0.4.8"
+pretty_env_logger = "0.3.1"
+serde = {version = "1.0.103", features = ["std", "derive"]}
+serenity = "0.7.3"
