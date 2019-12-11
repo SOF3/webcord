@@ -17,9 +17,8 @@ impl Secrets {
 #[derive(Debug, Clone, getset::Getters, serde::Deserialize)]
 #[get = "pub(crate)"]
 pub(crate) struct DiscordSecrets {
-    client_id: String,
+    client_id: u64,
     token: String,
-    user_id: u64,
 }
 
 #[derive(Debug, Clone, getset::Getters, serde::Deserialize)]
