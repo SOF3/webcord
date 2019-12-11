@@ -1,12 +1,23 @@
 use std::error::Error;
+use std::fmt::Display;
+use std::io;
 
 dirmod::all!();
 
+fn ctx<D: Display, E: Error>(context: D) -> impl Fn(E) -> io::Error {
+    move |err| {
+        io::Error::new(
+            io::ErrorKind::Other,
+            format!("error during {}: {}", &context, err).as_str(),
+        )
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
-    dotenv::dotenv()?;
+    dotenv::dotenv().ok();
     pretty_env_logger::init();
-    let secrets = Secrets::try_new()?;
-    let bridge = discord::Bridge::try_new(&secrets)?;
-    web::run(secrets, bridge)?;
+    let secrets = Secrets::try_new().map_err(ctx("loading secrets"))?;
+    let bridge = discord::Bridge::try_new(&secrets).map_err(ctx("starting discord bot"))?;
+    web::run(secrets, bridge).map_err(ctx("starting web server"))?;
     Ok(())
 }

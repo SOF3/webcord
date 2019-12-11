@@ -15,7 +15,8 @@ pub(crate) async fn run(secrets: Secrets, bridge: discord::Bridge) -> io::Result
             .service(index)
     })
     .bind(secrets.web().addr())?
-    .start().await
+    .start()
+    .await
 }
 
 #[actix_web::get("/")]

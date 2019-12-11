@@ -2753,6 +2753,7 @@ dependencies = [
  "pretty_env_logger",
  "serde 1.0.103",
  "serenity",
+ "typemap",
 ]
 
 [[package]]
