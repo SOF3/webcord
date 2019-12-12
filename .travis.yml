@@ -3,15 +3,16 @@ rust: [nightly]
 cache: cargo
 env:
   matrix:
-    - RELEASE_FLAG=""
+    - RELEASE_FLAG="" NODE_VERSION="10.17"
     - RELEASE_FLAG="--release"
 
 install:
   - "export RUSTFLAGS=$(cargo --version | grep nightly >/dev/null && echo \"-Z external-macro-backtrace\")"
   - "rustup component add rustfmt --toolchain $(rustup show active-toolchain | cut -d\" \" -f1)"
+  - "(cd client && npm install)"
+  - cargo install just
+  - just materialize
 
 script:
-  - cargo check --all --verbose $RELEASE_FLAG
-  - cargo build --all --verbose $RELEASE_FLAG
-  - cargo test --all --verbose $RELEASE_FLAG
-  - cargo doc --all --verbose $RELEASE_FLAG
+  - just build
+  - just test

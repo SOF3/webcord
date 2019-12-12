@@ -1,6 +1,13 @@
 run: build
 	cargo run $CARGO_FLAGS
 
+test: rust-test js-test
+
+rust-test:
+	cargo test $CARGO_FLAGS
+
+js-test:
+
 build: rust js css
 
 rust:
