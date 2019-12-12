@@ -46,6 +46,7 @@ impl Templates {
 pub(super) struct GlobalArgs {
     domain: String,
     invite_link: String,
+    runtime_id: u64,
 }
 
 impl GlobalArgs {
@@ -53,6 +54,7 @@ impl GlobalArgs {
         Self {
             domain: secrets.web().domain().clone(),
             invite_link: discord::invite_link(*secrets.discord().client_id()),
+            runtime_id: rand::random(),
         }
     }
 }

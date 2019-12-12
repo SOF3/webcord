@@ -1,6 +1,6 @@
 [package]
 name = "webcord"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["SOFe <sofe2038@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -11,7 +11,7 @@ description = "Mirrors Discord chat logs on webpages in a searchable fashion"
 
 [dependencies]
 actix-files = "0.2.0-alpha.3"
-actix-rt = "*" # selected by actix-web
+actix-rt = "1.0.0-alpha.3" # selected by actix-web
 actix-web = "2.0.0-alpha.3"
 config = "0.10.1"
 dirmod = "0.2.0-alpha.1"

@@ -20,32 +20,30 @@
 		<meta name="mobile-web-app-capable" content="yes"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-		<link rel="stylesheet" href="/style.css"/>
+		<link rel="stylesheet" href="/style.css?{{global.runtime_id}}"/>
 		<title>{{page.title}}</title>
 	</head>
 
 	<body>
-		<header>
-			<nav role="navigation" class="light-green darken-4">
-				<div class="nav-wrapper container">
-					<a id="logo-container" href="/" class="brand-logo">webcord</a>
-					<ul class="right">
-						<li>
-							<a href="/guilds">
-								<i class="material-icons">view_list</i>
-								Guilds
-							</a>
-						</li>
-						<li>
-							<a href="{{global.invite_link}}">
-								<i class="material-icons">add</i>
-								Invite
-							</a>
-						</li>
-					</ul>
-				</div>
-			</nav>
-		</header>
+		<nav role="navigation" class="light-green darken-4">
+			<div class="nav-wrapper container">
+				<a id="logo-container" href="/" class="brand-logo">webcord</a>
+				<ul class="right">
+					<li>
+						<a href="/guilds">
+							<i class="material-icons">view_list</i>
+							Guilds
+						</a>
+					</li>
+					<li>
+						<a href="{{global.invite_link}}">
+							<i class="material-icons">add</i>
+							Invite
+						</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
 
 		<main>
 		{{> @partial-block}}
@@ -53,19 +51,12 @@
 
 		<footer class="page-footer light-green darken-4">
 			<div class="container">
-				<div class="row">
-					<ul>
-						<li>
-							<a href="https://github.com/SOF3/webcord">
-								<img src="https://img.shields.io/github/stars/SOF3/webcord?style=social" alt="Fork on GitHub"/>
-							</a>
-						</li>
-						<li>
-							<a class="white-text" href="/privacy">Privacy policy</a>
-						</li>
-					</ul>
-				</div>
+				<ul class="inline-list">
+					<li><a class="white-text" href="/privacy">Privacy policy</a></li>
+					<li><a class="white-text" href="https://github.com/SOF3/webcord">GitHub</a></li>
+				</ul>
 			</div>
+
 			<div class="footer-copyright">
 				<div class="container">
 					All chat messages displayed via this website are retrieved from Discord.
