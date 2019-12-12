@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+		<meta name="description" content="{{page.description}}"/>
+		<meta name="keywords" content="discord,chat,log,mirror,message,history"/>
+		<meta property="og:site_name" content="webcord"/>
+		<meta property="og:image" content="{{global.site_domain}}/favicon.ico"/>
+		<meta property="og:title" content="{{page.title}}"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="{{global.site_domain}}/"/>
+		<meta name="twitter:card" content="summary"/>
+		<meta name="twitter:title" content="{{page.title}}"/>
+		<meta name="twitter:description" content="{{page.description}}"/>
+		<meta name="theme-color" content="#1A4D22"/>
+		<meta name="mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<link type="image/x-icon" rel="icon" href="/favicon.ico"/>
+		<meta name="mobile-web-app-capable" content="yes"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+		<link rel="stylesheet" href="/style.css"/>
+		<title>{{page.title}}</title>
+	</head>
+
+	<body>
+		<header>
+			<nav role="navigation" class="light-green darken-4">
+				<div class="nav-wrapper container">
+					<a id="logo-container" href="/" class="brand-logo">webcord</a>
+					<ul class="right">
+						<li>
+							<a href="/guilds">
+								<i class="material-icons">view_list</i>
+								Guilds
+							</a>
+						</li>
+						<li>
+							<a href="{{global.invite_link}}">
+								<i class="material-icons">add</i>
+								Invite
+							</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+		{{> @partial-block}}
+		</main>
+
+		<footer class="page-footer light-green darken-4">
+			<div class="container">
+				<div class="row">
+					<ul>
+						<li>
+							<a href="https://github.com/SOF3/webcord">
+								<img src="https://img.shields.io/github/stars/SOF3/webcord?style=social" alt="Fork on GitHub"/>
+							</a>
+						</li>
+						<li>
+							<a class="white-text" href="/privacy">Privacy policy</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="footer-copyright">
+				<div class="container">
+					All chat messages displayed via this website are retrieved from Discord.
+					We do not permanently store any content other than derived ones that cannot be restored.
+					Shall there be any copyright complaints, please refer to <a href="https://discordapp.com/terms">Discord Terms</a>.
+				</div>
+			</div>
+		</footer>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	</body>
+</html>

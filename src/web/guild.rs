@@ -1,27 +1,31 @@
 use actix_web::{error, web, HttpResponse};
-use handlebars::Handlebars;
-use serde_json::json;
 
-#[actix_web::get("/<guild>")]
-pub(super) async fn guild_page(
-    hb: web::Data<Handlebars>,
-    gha: web::Data<super::GlobalHbArgs>,
+use super::template;
+
+#[actix_web::get("/logs/{guild}")]
+pub(super) async fn handler(
+    tmpl: web::Data<template::Templates>,
     path: web::Path<(u64,)>,
 ) -> Result<HttpResponse, error::Error> {
     let (guild,) = path.into_inner();
+    let name = get_guild_name(guild).await?;
     let channels = get_guild_channels(guild).await?;
-    let data = json!({
-        "global": &gha.0,
-        "guild": {
-            "id": guild,
-            // TODO name
+    let data = template::GuildArgs {
+        guild: template::Guild {
+            id: guild,
+            name: &name,
         },
-        "channels": channels,
-    });
-    let rendered = hb
-        .render("guild", &data)
-        .map_err(error::ErrorInternalServerError)?;
+        channels: &channels,
+    };
+    let rendered = tmpl.guild(&template::PageArgs {
+        title: &name,
+        description: &format!("Chat logs for the Discord guild \"{}\"", &name),
+    }, &data)?;
     Ok(HttpResponse::Ok().body(rendered))
+}
+
+async fn get_guild_name(_guild: u64) -> Result<String, error::Error> {
+    unimplemented!()
 }
 
 async fn get_guild_channels(_guild: u64) -> Result<Vec<(u64, String)>, error::Error> {

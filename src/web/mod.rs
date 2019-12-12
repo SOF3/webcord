@@ -1,11 +1,9 @@
-dirmod::all!();
+dirmod::all!(default priv);
 
+use std::fmt;
 use std::io;
 
-use actix_files::NamedFile;
-use actix_web::{error, guard, web, HttpResponse, Result};
-use handlebars::Handlebars;
-use serde_json::json;
+use actix_web::{error, guard, middleware, web, HttpResponse, };
 
 use crate::{discord, Secrets};
 
@@ -13,31 +11,26 @@ use crate::{discord, Secrets};
 pub(crate) async fn run(secrets: Secrets, bridge: discord::Bridge) -> io::Result<()> {
     let bridge = web::Data::new(bridge);
 
-    let mut hb = handlebars::Handlebars::new();
-    hb.register_templates_directory(".hbs", "./static/templates")
-        .map_err(crate::ctx("loading handlebars templates"))?;
-    let hb = web::Data::new(hb);
-
-    let gha = json!({
-        "domain": secrets.web().domain(),
-        "invite_link": discord::invite_link(*secrets.discord().client_id()),
-    });
-    let gha = web::Data::new(GlobalHbArgs(gha));
+    let tmpl = template::Templates::try_new(&secrets)?;
+    let tmpl = web::Data::new(tmpl);
 
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .register_data(bridge.clone())
-            .register_data(hb.clone())
-            .register_data(gha.clone())
-            .service(index)
-            .service(script)
-            .service(guild_page)
-            .service(
-                web::resource("").route(web::get().to(error404)).route(
-                    web::route()
-                        .guard(guard::Not(guard::Get()))
-                        .to(HttpResponse::MethodNotAllowed),
-                ),
+            .register_data(tmpl.clone())
+            .wrap(middleware::Logger::default())
+            .service(index::index)
+            .service(assets::script)
+            .service(assets::style)
+            .service(guild::handler)
+            .default_service(
+                web::resource("")
+                    .route(web::get().to(index::error404))
+                    .route(
+                        web::route()
+                            .guard(guard::Not(guard::Get()))
+                            .to(HttpResponse::MethodNotAllowed),
+                    ),
             )
     })
     .bind(secrets.web().addr())?
@@ -45,30 +38,11 @@ pub(crate) async fn run(secrets: Secrets, bridge: discord::Bridge) -> io::Result
     .await
 }
 
-#[actix_web::get("/")]
-async fn index(hb: web::Data<Handlebars>, gha: web::Data<GlobalHbArgs>) -> Result<HttpResponse> {
-    let data = json!({
-        "global": &gha.0,
-    });
-    let rendered = hb
-        .render("index", &data)
-        .map_err(error::ErrorInternalServerError)?;
-    Ok(HttpResponse::Ok().body(rendered))
+fn internal_error<D: fmt::Debug + fmt::Display + 'static, E: fmt::Display>(
+    user_msg: D,
+) -> impl FnOnce(E) -> error::Error {
+    |err| {
+        log::error!("Error handling request: {}", err);
+        error::ErrorInternalServerError(user_msg)
+    }
 }
-
-#[actix_web::get("/script.js")]
-async fn script() -> Result<NamedFile> {
-    Ok(NamedFile::open("build/script.js")?)
-}
-
-async fn error404(hb: web::Data<Handlebars>, gha: web::Data<GlobalHbArgs>) -> Result<HttpResponse> {
-    let data = json!({
-        "global": &gha.0,
-    });
-    let rendered = hb
-        .render("404", &data)
-        .map_err(error::ErrorInternalServerError)?;
-    Ok(HttpResponse::Ok().body(rendered))
-}
-
-struct GlobalHbArgs(pub serde_json::Value);
