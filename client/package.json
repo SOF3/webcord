@@ -1,0 +1,31 @@
+{
+  "name": "webcord-client",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/index.js",
+  "devDependencies": {
+    "glob": "^7.1.6",
+    "purify-css": "^1.2.5",
+    "sass": "^1.23.7",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "build": "tsc && webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css": "node compile-css.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SOF3/webcord.git"
+  },
+  "author": "SOFe",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/SOF3/webcord/issues"
+  },
+  "homepage": "https://github.com/SOF3/webcord#readme",
+  "dependencies": {
+    "change-case": "^4.1.0"
+  }
+}

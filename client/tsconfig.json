@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"outDir": "./js",
+		"strict": true,
+		"lib": ["es2016", "dom"],
+		"preserveConstEnums": true
+	},
+	"include": ["./src/**/*.ts"]
+}

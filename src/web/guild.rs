@@ -17,10 +17,13 @@ pub(super) async fn handler(
         },
         channels: &channels,
     };
-    let rendered = tmpl.guild(&template::PageArgs {
-        title: &name,
-        description: &format!("Chat logs for the Discord guild \"{}\"", &name),
-    }, &data)?;
+    let rendered = tmpl.guild(
+        &template::PageArgs {
+            title: &name,
+            description: &format!("Chat logs for the Discord guild \"{}\"", &name),
+        },
+        &data,
+    )?;
     Ok(HttpResponse::Ok().body(rendered))
 }
 

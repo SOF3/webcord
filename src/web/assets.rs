@@ -1,12 +1,37 @@
-use actix_files::NamedFile;
-use actix_web::Result;
+use actix_web::{Result, HttpResponse};
+use actix_web::http::header::{CacheControl, CacheDirective};
 
-#[actix_web::get("/script.js")]
-pub(super) async fn script() -> Result<NamedFile> {
-    Ok(NamedFile::open("build/script.js")?)
+macro_rules! assets {
+    ($( $name:ident $path:literal $file:literal $mime:literal; )*) => {
+        $(
+            #[actix_web::get($path)]
+            pub(super) async fn $name() -> Result<HttpResponse> {
+                lazy_static::lazy_static! {
+                    static ref DATA: Vec<u8> = {
+                        use std::fs::File;
+                        use std::io::Read;
+
+                        let mut vec = vec![];
+                        File::open($file)
+                            .expect("Failed opening static file")
+                            .read_to_end(&mut vec)
+                            .expect("Failed reading static file");
+                        vec
+                    };
+                }
+                Ok(HttpResponse::Ok()
+                   .header("Cache-Control", CacheControl(vec![
+                       CacheDirective::Public,
+                       CacheDirective::MaxAge(604800),
+                   ]))
+                   .header("Content-Type", $mime)
+                   .body(DATA.as_slice()))
+            }
+        )*
+    };
 }
 
-#[actix_web::get("/style.css")]
-pub(super) async fn style() -> Result<NamedFile> {
-    Ok(NamedFile::open("static/style.css")?)
+assets! {
+    script "/script.js" "build/main.js" "application/javascript";
+    style "/style.css" "build/style.css" "text/css";
 }

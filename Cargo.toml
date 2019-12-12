@@ -10,7 +10,6 @@ readme = "README.md"
 description = "Mirrors Discord chat logs on webpages in a searchable fashion"
 
 [dependencies]
-actix-files = "0.2.0-alpha.3"
 actix-rt = "1.0.0-alpha.3" # selected by actix-web
 actix-web = "2.0.0-alpha.3"
 config = "0.10.1"
@@ -19,6 +18,7 @@ dotenv = "0.15.0"
 futures = "0.3.1"
 getset = "0.0.9"
 handlebars = "2.0.2"
+lazy_static = "1.4.0"
 log = "0.4.8"
 pretty_env_logger = "0.3.1"
 rand = "0.7.2"

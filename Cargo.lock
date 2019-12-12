@@ -34,26 +34,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "actix-files"
-version = "0.2.0-alpha.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd330ed55aa4befccacdea3d1febe18614c66432accb9dd31eb61c415ebd96ff"
-dependencies = [
- "actix-http",
- "actix-service",
- "actix-web",
- "bitflags",
- "bytes 0.5.2",
- "derive_more",
- "futures 0.3.1",
- "log",
- "mime",
- "mime_guess",
- "percent-encoding 2.1.0",
- "v_htmlescape",
-]
-
-[[package]]
 name = "actix-http"
 version = "1.0.0-alpha.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2685,37 +2665,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfabe4f248cd69106fdbea55ddd1a1d7aa7abd1a2b167ad62245b7a9306fb1f1"
 
 [[package]]
-name = "v_escape"
-version = "0.7.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "660b101c07b5d0863deb9e7fb3138777e858d6d2a79f9e6049a27d1cc77c6da6"
-dependencies = [
- "v_escape_derive",
-]
-
-[[package]]
-name = "v_escape_derive"
-version = "0.5.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2ca2a14bc3fc5b64d188b087a7d3a927df87b152e941ccfbc66672e20c467ae"
-dependencies = [
- "nom 4.2.3",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "v_htmlescape"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e33e939c0d8cf047514fb6ba7d5aac78bc56677a6938b2ee67000b91f2e97e41"
-dependencies = [
- "cfg-if",
- "v_escape",
-]
-
-[[package]]
 name = "version_check"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2842,7 +2791,6 @@ dependencies = [
 name = "webcord"
 version = "0.0.0"
 dependencies = [
- "actix-files",
  "actix-rt",
  "actix-web",
  "config",
@@ -2851,6 +2799,7 @@ dependencies = [
  "futures 0.3.1",
  "getset",
  "handlebars",
+ "lazy_static",
  "log",
  "pretty_env_logger",
  "rand 0.7.2",

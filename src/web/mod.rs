@@ -3,7 +3,7 @@ dirmod::all!(default priv);
 use std::fmt;
 use std::io;
 
-use actix_web::{error, guard, middleware, web, HttpResponse, };
+use actix_web::{error, guard, middleware, web, HttpResponse};
 
 use crate::{discord, Secrets};
 
