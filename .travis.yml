@@ -4,11 +4,12 @@ cache: cargo
 env:
   matrix:
     - RELEASE_FLAG="" NODE_VERSION="10.17"
-    - RELEASE_FLAG="--release"
+    - RELEASE_FLAG="--release" NODE_VERSION="10.17"
 
 install:
   - "export RUSTFLAGS=$(cargo --version | grep nightly >/dev/null && echo \"-Z external-macro-backtrace\")"
   - "rustup component add rustfmt --toolchain $(rustup show active-toolchain | cut -d\" \" -f1)"
+  - nvm install $NODE_VERSION
   - "(cd client && npm install)"
   - cargo install just
   - just materialize
