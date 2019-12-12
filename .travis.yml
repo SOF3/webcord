@@ -3,8 +3,8 @@ rust: [nightly]
 cache: cargo
 env:
   matrix:
-    - RELEASE_FLAG="" NODE_VERSION="10.17"
-    - RELEASE_FLAG="--release" NODE_VERSION="10.17"
+    - RELEASE_FLAG="" NODE_VERSION="10.17" RUST_LOG=trace CARGO_FLAGS=--verbose
+    - RELEASE_FLAG="--release" NODE_VERSION="10.17" RUST_LOG=trace CARGO_FLAGS=--verbose
 
 install:
   - "export RUSTFLAGS=$(cargo --version | grep nightly >/dev/null && echo \"-Z external-macro-backtrace\")"
