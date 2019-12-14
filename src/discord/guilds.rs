@@ -1,5 +1,5 @@
 impl super::Bridge {
-    pub async fn guild_info(&self, guild_id: u64) -> super::Result<GuildInfo> {
+    pub async fn guild_info(&self, _guild_id: u64) -> super::Result<GuildInfo> {
         unimplemented!()
     }
 }

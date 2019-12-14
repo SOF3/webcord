@@ -1,4 +1,4 @@
-dirmod::all!(default priv);
+dirmod::all!(default priv; priv use result);
 
 use std::fmt;
 use std::io;
