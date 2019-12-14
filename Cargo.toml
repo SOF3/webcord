@@ -11,7 +11,7 @@ description = "Mirrors Discord chat logs on webpages in a searchable fashion"
 
 [dependencies]
 actix-rt = "1.0.0-alpha.3" # selected by actix-web
-actix-web = "2.0.0-alpha.3"
+actix-web = "2.0.0-alpha.5"
 config = "0.10.1"
 dirmod = "0.2.0-alpha.1"
 dotenv = "0.15.0"
