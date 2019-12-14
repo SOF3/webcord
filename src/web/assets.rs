@@ -1,5 +1,5 @@
-use actix_web::{Result, HttpResponse};
 use actix_web::http::header::{CacheControl, CacheDirective};
+use actix_web::{HttpResponse, Result};
 
 macro_rules! assets {
     ($( $name:ident $path:literal $file:literal $mime:literal; )*) => {

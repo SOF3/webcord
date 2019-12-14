@@ -1,3 +1,5 @@
+#![feature(async_closure)]
+
 use std::error::Error;
 use std::fmt::Display;
 use std::io;

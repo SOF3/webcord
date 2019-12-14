@@ -2809,6 +2809,7 @@ dependencies = [
  "actix-rt",
  "actix-web",
  "config",
+ "derive_more",
  "dirmod",
  "dotenv",
  "futures 0.3.1",

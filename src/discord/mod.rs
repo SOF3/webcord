@@ -1,3 +1,5 @@
+dirmod::all!();
+
 use std::thread;
 
 use serenity::framework::standard::{macros::*, CommandResult, StandardFramework};
