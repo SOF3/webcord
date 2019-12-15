@@ -209,9 +209,9 @@ dependencies = [
 
 [[package]]
 name = "actix-web"
-version = "2.0.0-alpha.5"
+version = "2.0.0-alpha.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f5497a090bf0ea724d06cfba5918382d972e12078ef6cd0342932a67601829a"
+checksum = "97eb02fa0a3c7e2670122256c2e2f787ff328a2cb15c36888b1bf92e1bcf6f73"
 dependencies = [
  "actix-codec",
  "actix-http",
@@ -334,9 +334,9 @@ checksum = "1d49d90015b3c36167a20fe2810c5cd875ad504b39cff3d4eae7977e6b7c1cb2"
 
 [[package]]
 name = "awc"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ba599200997621014f88c25494975955d5f3c1cc70a56f0ac6a06a08182b8ee"
+checksum = "d7601d4d1d7ef2335d6597a41b5fe069f6ab799b85f53565ab390e7b7065aac5"
 dependencies = [
  "actix-codec",
  "actix-http",
