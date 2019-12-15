@@ -1307,9 +1307,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
+checksum = "44cf6316aa62d66102c4fe0b2a2167d3b85d25d90899d3512e10f09fe48a5a18"
 dependencies = [
  "cfg-if",
 ]
