@@ -8,7 +8,7 @@
     "purify-css": "^1.2.5",
     "sass": "^1.23.7",
     "typescript": "^3.7.3",
-    "webpack": "^4.41.2",
+    "webpack": "^4.41.3",
     "webpack-cli": "^3.3.10"
   },
   "scripts": {
