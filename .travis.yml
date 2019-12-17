@@ -1,6 +1,13 @@
 language: rust
 rust: [nightly]
-cache: cargo
+addons:
+  apt:
+    update: true
+    packages: [libpq-dev]
+cache:
+  directories:
+    - $HOME/.cargo
+    - $TRAVIS_BUILD_DIR/client/node_modules
 env:
   matrix:
     - NODE_VERSION="10.17" RUST_LOG=trace CARGO_FLAGS="--verbose"
