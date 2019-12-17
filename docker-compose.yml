@@ -1,0 +1,24 @@
+version: "3"
+services:
+  app:
+    build: "."
+    volumes:
+      - ./config.toml:/webcord/config.toml
+    env_file:
+      - ./.env
+    ports:
+      - "15678:15678"
+    depends_on:
+      - db
+    links:
+      - "db:db"
+  db:
+    image: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+    env_file:
+      - ./.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "15679:5432"

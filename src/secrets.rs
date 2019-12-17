@@ -3,6 +3,7 @@
 pub(crate) struct Secrets {
     discord: DiscordSecrets,
     web: WebSecrets,
+    database: DatabaseSecrets,
 }
 
 impl Secrets {
@@ -26,4 +27,10 @@ pub(crate) struct DiscordSecrets {
 pub(crate) struct WebSecrets {
     addr: std::net::SocketAddr,
     domain: String,
+}
+
+#[derive(Debug, Clone, getset::Getters, serde::Deserialize)]
+#[get = "pub(crate)"]
+pub(crate) struct DatabaseSecrets {
+    url: String,
 }

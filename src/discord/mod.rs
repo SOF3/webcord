@@ -7,14 +7,17 @@ use serenity::model::prelude::{self as model, Message};
 use serenity::prelude::*;
 
 use crate::Secrets;
+use crate::index::Index;
 
 pub struct Bridge {}
 
 impl Bridge {
-    pub(crate) fn try_new(secrets: &Secrets) -> serenity::Result<Self> {
+    pub(crate) fn try_new(secrets: &Secrets, index: &Index) -> serenity::Result<Self> {
         let mut client = serenity::Client::new(secrets.discord().token(), Handler)?;
         {
-            client.data.write().insert::<SecretsKey>(secrets.clone());
+            let mut data = client.data.write();
+            data.insert::<SecretsKey>(secrets.clone());
+            data.insert::<IndexKey>(index.clone());
         }
         client.with_framework(
             StandardFramework::new()
@@ -83,6 +86,11 @@ impl EventHandler for Handler {
 struct SecretsKey;
 impl typemap::Key for SecretsKey {
     type Value = Secrets;
+}
+
+struct IndexKey;
+impl typemap::Key for IndexKey {
+    type Value = Index;
 }
 
 pub fn invite_link<'a>(client_id: u64) -> String {

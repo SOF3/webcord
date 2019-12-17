@@ -6,10 +6,12 @@ use std::io;
 use actix_web::{error, guard, middleware, web, HttpResponse};
 
 use crate::{discord, Secrets};
+use crate::index::Index;
 
 #[actix_rt::main]
-pub(crate) async fn run(secrets: Secrets, bridge: discord::Bridge) -> io::Result<()> {
+pub(crate) async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io::Result<()> {
     let bridge = web::Data::new(bridge);
+    let index = web::Data::new(index);
 
     let tmpl = template::Templates::try_new(&secrets)?;
     let tmpl = web::Data::new(tmpl);
@@ -17,6 +19,7 @@ pub(crate) async fn run(secrets: Secrets, bridge: discord::Bridge) -> io::Result
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .register_data(bridge.clone())
+            .register_data(index.clone())
             .register_data(tmpl.clone())
             .wrap(middleware::Logger::default())
             .service(index::index)

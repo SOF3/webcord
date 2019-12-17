@@ -4,7 +4,7 @@ run: build
 test: rust-test js-test
 
 rust-test:
-	cargo test $CARGO_FLAGS
+	cargo test --all $CARGO_FLAGS
 
 js-test:
 

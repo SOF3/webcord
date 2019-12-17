@@ -7,3 +7,4 @@ config.toml
 config.yml
 node_modules
 /build
+pgdata
