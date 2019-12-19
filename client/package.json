@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/SOF3/webcord#readme",
   "dependencies": {
-    "change-case": "^4.1.0"
+    "change-case": "^4.1.1"
   }
 }
