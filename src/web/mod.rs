@@ -18,9 +18,9 @@ pub(crate) async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge)
 
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
-            .register_data(bridge.clone())
-            .register_data(index.clone())
-            .register_data(tmpl.clone())
+            .app_data(bridge.clone())
+            .app_data(index.clone())
+            .app_data(tmpl.clone())
             .wrap(middleware::Logger::default())
             .service(index::index)
             .service(assets::script)
