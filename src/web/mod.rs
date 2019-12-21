@@ -5,8 +5,8 @@ use std::io;
 
 use actix_web::{error, guard, middleware, web, HttpResponse};
 
-use crate::{discord, Secrets};
 use crate::index::Index;
+use crate::{discord, Secrets};
 
 #[actix_rt::main]
 pub(crate) async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io::Result<()> {

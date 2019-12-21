@@ -20,7 +20,7 @@ pub(super) async fn handler(
             id: guild_id,
             name: guild.name(),
         },
-        channels: guild.channels(),
+        channels: unimplemented!(),
     };
     let rendered = tmpl.clone().guild(
         &template::PageArgs {

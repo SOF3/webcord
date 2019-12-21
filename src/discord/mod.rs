@@ -6,8 +6,8 @@ use serenity::framework::standard::{macros::*, CommandResult, StandardFramework}
 use serenity::model::prelude::{self as model, Message};
 use serenity::prelude::*;
 
-use crate::Secrets;
 use crate::index::Index;
+use crate::Secrets;
 
 pub struct Bridge {}
 

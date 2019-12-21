@@ -1,5 +1,5 @@
 #[macro_use]
 extern crate diesel;
 
-mod schema;
-pub use schema::*;
+pub mod models;
+pub mod schema;

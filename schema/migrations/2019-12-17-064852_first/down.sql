@@ -1,1 +1,1 @@
-DROP TABLE known_invite, channel_day, channel, guild;
+DROP TABLE known_invites, channel_hours, channels, guilds;

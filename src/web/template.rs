@@ -9,7 +9,7 @@ use serde::Serialize;
 use serde_json::json;
 
 use super::*;
-use crate::{discord, Secrets};
+use crate::{discord, Secrets, Snowflake};
 
 #[derive(Debug)]
 pub(super) struct Templates(Handlebars, GlobalArgs);
@@ -49,7 +49,7 @@ macro_rules! decl_tmpl {
     ($( $name:ident $(<$($tyn:ident $(: $typ:ty)?),*>)? ($arg:ty); )*) => {
         impl Templates {
             $(
-                pub(super) fn $name(self: Arc<Self>, page: &PageArgs<'_ $(, $($tyn:ident $(: $typ:ty)?),*)?>, arg: &$arg) -> UserResult<String> {
+                pub(super) fn $name $( < $($tyn:ident $(: $typ:ty)?),* > )? (self: Arc<Self>, page: &PageArgs<'_>, arg: &$arg) -> UserResult<String> {
                     self.0.render(stringify!($name), &json!({
                         "global": self.1,
                         "page": page,
@@ -103,7 +103,7 @@ pub(super) struct ErrorArgs<'t> {
 #[derive(Debug, Serialize)]
 pub(super) struct GuildArgs<'t> {
     pub(super) guild: Guild<'t>,
-    pub(super) channels: &'t Vec<(u64, String)>,
+    pub(super) channels: Vec<(Snowflake, &'t str)>,
 }
 
 #[derive(Debug, Serialize)]
