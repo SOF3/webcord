@@ -9,10 +9,12 @@ use serenity::prelude::*;
 use crate::index::Index;
 use crate::Secrets;
 
-pub struct Bridge {}
+pub struct Bridge {
+    index: Index,
+}
 
 impl Bridge {
-    pub(crate) fn try_new(secrets: &Secrets, index: &Index) -> serenity::Result<Self> {
+    pub fn try_new(secrets: &Secrets, index: &Index) -> serenity::Result<Self> {
         let mut client = serenity::Client::new(secrets.discord().token(), Handler)?;
         {
             let mut data = client.data.write();
@@ -32,7 +34,9 @@ impl Bridge {
                 log::error!("Discord client error: {}", err);
             }
         });
-        Ok(Self {})
+        Ok(Self {
+            index: index.clone(),
+        })
     }
 }
 

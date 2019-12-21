@@ -9,7 +9,7 @@ use crate::index::Index;
 use crate::{discord, Secrets};
 
 #[actix_rt::main]
-pub(crate) async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io::Result<()> {
+pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io::Result<()> {
     let bridge = web::Data::new(bridge);
     let index = web::Data::new(index);
 
