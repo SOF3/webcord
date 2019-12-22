@@ -3,7 +3,9 @@ use std::hash::{Hash, Hasher};
 use derive_new::new;
 use getset::{CopyGetters, Getters};
 use serde::Serialize;
-use webcord_schema::models::*;
+use webcord_schema::models;
+
+pub use models::{ChannelId, GuildId, MessageId};
 
 #[derive(Serialize, CopyGetters, Getters, new)]
 pub struct GuildInfo {

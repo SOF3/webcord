@@ -9,7 +9,7 @@ use serde::Serialize;
 use serde_json::json;
 
 use super::*;
-use crate::{discord, Secrets, Snowflake};
+use crate::{discord, ChannelId, Secrets};
 
 #[derive(Debug)]
 pub(super) struct Templates(Handlebars, GlobalArgs);
@@ -23,22 +23,50 @@ impl Templates {
         Ok(Self(hb, ga))
     }
 
-    pub(super) fn user_error<C>(self: Arc<Self>, code: C, inner: impl fmt::Display) -> UserError
+    pub(super) fn user_error<C>(&self, code: C, inner: impl fmt::Display) -> UserError
     where
         C: TryInto<StatusCode>,
         C::Error: fmt::Debug,
     {
-        user_error(self, code, inner)
+        let message = inner.to_string();
+        let code = code.try_into().expect("Invalid status code");
+        let body = match self.error(
+            &PageArgs {
+                title: &format!(
+                    "{} {}",
+                    code.as_str(),
+                    code.canonical_reason().unwrap_or("")
+                ),
+                description: &message,
+            },
+            &ErrorArgs { message: &message },
+        ) {
+            Ok(body) => body,
+            Err(err) => {
+                log::error!("Error printing error template: {}", err);
+                return UserError {
+                    code: StatusCode::INTERNAL_SERVER_ERROR,
+                    inner: "Error printing error template".into(),
+                    body: "Internal server error".into(),
+                };
+            }
+        };
+        UserError {
+            code,
+            inner: message.into(),
+            body: body.into(),
+        }
     }
 
-    pub(super) fn priv_error<T>(
-        self: Arc<Self>,
-        readable: impl fmt::Display,
-    ) -> impl FnOnce(T) -> UserError
+    pub(super) fn priv_error<'a, T, R>(
+        &'a self,
+        readable: &'a R,
+    ) -> impl (FnOnce(T) -> UserError) + 'a
     where
         T: fmt::Display,
+        R: fmt::Display + ?Sized,
     {
-        |err| {
+        move |err| {
             log::error!("Internal error: {}", err);
             self.user_error(500, readable)
         }
@@ -49,7 +77,7 @@ macro_rules! decl_tmpl {
     ($( $name:ident $(<$($tyn:ident $(: $typ:ty)?),*>)? ($arg:ty); )*) => {
         impl Templates {
             $(
-                pub(super) fn $name $( < $($tyn:ident $(: $typ:ty)?),* > )? (self: Arc<Self>, page: &PageArgs<'_>, arg: &$arg) -> UserResult<String> {
+                pub(super) fn $name $( < $($tyn:ident $(: $typ:ty)?),* > )? (&self, page: &PageArgs<'_>, arg: &$arg) -> UserResult<String> {
                     self.0.render(stringify!($name), &json!({
                         "global": self.1,
                         "page": page,
@@ -103,7 +131,7 @@ pub(super) struct ErrorArgs<'t> {
 #[derive(Debug, Serialize)]
 pub(super) struct GuildArgs<'t> {
     pub(super) guild: Guild<'t>,
-    pub(super) channels: Vec<(Snowflake, &'t str)>,
+    pub(super) channels: Vec<(ChannelId, &'t str)>,
 }
 
 #[derive(Debug, Serialize)]

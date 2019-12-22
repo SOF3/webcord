@@ -1,4 +1,8 @@
+use derive_more::Display;
 use derive_new::new;
+use diesel::deserialize::{FromSql, Queryable};
+use diesel::expression::AsExpression;
+use diesel::sql_types::BigInt;
 use getset::{CopyGetters, Getters};
 
 use crate::schema::*;
@@ -50,7 +54,35 @@ pub struct KnownInvite {
     guild_id: GuildId,
 }
 
-pub type SnowflakeData = i64;
-pub type GuildId = SnowflakeData;
-pub type ChannelId = SnowflakeData;
-pub type MessageId = SnowflakeData;
+#[allow(unused_macros)]
+macro_rules! snowflake {
+    ($($name:ident)*) => {$(
+        #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize)]
+        pub struct $name(pub u64);
+
+        impl AsExpression<BigInt> for $name {
+            type Expression = <i64 as AsExpression<BigInt>>::Expression;
+
+            fn as_expression(self) -> Self::Expression {
+                AsExpression::<BigInt>::as_expression(self.0 as i64)
+            }
+        }
+
+        impl<ST, DB: diesel::backend::Backend> Queryable<ST, DB> for $name
+        where i64: FromSql<ST, DB> {
+            type Row = <i64 as Queryable<ST, DB>>::Row;
+
+            fn build(row: Self::Row) -> Self {
+                let inner = <i64 as Queryable<ST, DB>>::build(row);
+                Self(inner as u64)
+            }
+        }
+    )*};
+}
+#[allow(unused_macros)]
+macro_rules! snowflake2 {
+    ($($name:ident)*) => {$(
+        pub type $name = i64;
+    )*};
+}
+snowflake!(GuildId ChannelId MessageId);

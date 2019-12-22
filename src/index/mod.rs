@@ -1,3 +1,6 @@
+#![allow(unused_imports)]
+dirmod::all!();
+
 use derive_more::{Display, From};
 use diesel::pg::PgConnection;
 use diesel::prelude::{BelongingToDsl, OptionalExtension, QueryDsl, RunQueryDsl};
@@ -20,31 +23,6 @@ pub struct Index(Pool);
 impl Index {
     pub fn try_new(secrets: &Secrets) -> Result<Index, r2d2::Error> {
         Ok(Index(Pool::new(ConnMan::new(secrets.database().url()))?))
-    }
-
-    pub fn guild_info(&self, id: models::GuildId) -> Result<Option<GuildInfo>, QueryError> {
-        let guild = guilds::guilds
-            .find(id)
-            .first::<models::Guild>(&self.0.get()?)
-            .optional()?;
-        match guild {
-            Some(guild) => {
-                let channels = models::Channel::belonging_to(&guild)
-                    .load::<models::Channel>(&self.0.get()?)?;
-                let channels = channels
-                    .into_iter()
-                    .map(|ch| {
-                        ChannelInfo::new(ch.id(), ch.cache_name().clone(), ch.cache_desc().clone())
-                    })
-                    .collect();
-                Ok(Some(GuildInfo::new(
-                    id,
-                    guild.cache_name().clone(),
-                    channels,
-                )))
-            }
-            None => Ok(None),
-        }
     }
 }
 
