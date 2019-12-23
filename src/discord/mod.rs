@@ -60,7 +60,7 @@ fn help(ctx: &mut Context, msg: &Message) -> CommandResult {
         let tymap = ctx.data.read();
         let secrets = tymap.get::<SecretsKey>().unwrap();
         format!(
-            "Mirroring this server at {domain}/logs/{guild} live.\n\
+            "Mirroring this server at {domain}/guilds/{guild} live.\n\
              Invite this bot to your server: {invite}",
             domain = secrets.web().domain(),
             guild = msg.guild_id.map_or(0, |id| *id.as_u64()),

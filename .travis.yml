@@ -24,3 +24,5 @@ install:
 script:
   - just build
   - just test
+after_script:
+  - ldd target/*/webcord

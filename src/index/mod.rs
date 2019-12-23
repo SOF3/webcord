@@ -6,9 +6,8 @@ use diesel::pg::PgConnection;
 use diesel::prelude::{BelongingToDsl, OptionalExtension, QueryDsl, RunQueryDsl};
 use diesel::r2d2::ConnectionManager;
 use webcord_schema::models;
-#[allow(unused_imports)]
 use webcord_schema::schema::{
-    channel_hours::dsl as channel_hours, channels::dsl as channels, guilds::dsl as guilds,
+    channel_hours::dsl as channel_hours, channels::dsl as channels,
     known_invites::dsl as known_invites,
 };
 

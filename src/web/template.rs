@@ -94,6 +94,7 @@ decl_tmpl! {
     error(ErrorArgs<'_>);
 
     guild(GuildArgs<'_>);
+    guilds(GuildsArgs<'_>);
 }
 
 #[derive(Debug, Serialize)]
@@ -130,11 +131,16 @@ pub(super) struct ErrorArgs<'t> {
 #[derive(Debug, Serialize)]
 pub(super) struct GuildArgs<'t> {
     pub(super) guild: Guild<'t>,
-    pub(super) channels: Vec<(ChannelId, &'t str)>,
+    pub(super) channels: &'t Vec<(ChannelId, &'t str)>,
 }
 
 #[derive(Debug, Serialize)]
 pub(super) struct Guild<'t> {
     pub(super) id: GuildId,
     pub(super) name: &'t str,
+}
+
+#[derive(Debug, Serialize)]
+pub(super) struct GuildsArgs<'t> {
+    pub(super) guilds: &'t Vec<(GuildId, &'t str)>,
 }

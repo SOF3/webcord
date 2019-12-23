@@ -5,7 +5,7 @@ use super::UserResult;
 
 #[actix_web::get("/")]
 pub(super) async fn index(tmpl: web::Data<Templates>) -> UserResult<HttpResponse> {
-    let rendered = tmpl.into_inner().index(
+    let rendered = tmpl.index(
         &template::PageArgs {
             title: "webcord",
             description: "webcord: Chat log mirror for Discord",
@@ -17,7 +17,6 @@ pub(super) async fn index(tmpl: web::Data<Templates>) -> UserResult<HttpResponse
 
 pub(super) async fn error404(tmpl: web::Data<Templates>) -> actix_web::Result<HttpResponse> {
     let rendered = tmpl
-        .into_inner()
         .error(
             &template::PageArgs {
                 title: "Not Found",

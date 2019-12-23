@@ -26,6 +26,7 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             .service(assets::script)
             .service(assets::style)
             .service(guild::handler)
+            .service(guilds::handler)
             .default_service(
                 web::resource("")
                     .route(web::get().to(index::error404))

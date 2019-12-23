@@ -44,6 +44,12 @@ pub struct Guild {
     listed: bool,
 }
 
+impl Guild {
+    pub fn into_name(self) -> String {
+        self.cache_name
+    }
+}
+
 #[derive(Associations, Identifiable, Queryable, Getters, CopyGetters)]
 #[belongs_to(Guild)]
 #[primary_key(code)]
