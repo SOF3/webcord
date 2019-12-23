@@ -1,7 +1,6 @@
 use std::convert::TryInto;
 use std::fmt;
 use std::io;
-use std::sync::Arc;
 
 use actix_web::http::StatusCode;
 use handlebars::Handlebars;
@@ -9,7 +8,7 @@ use serde::Serialize;
 use serde_json::json;
 
 use super::*;
-use crate::{discord, ChannelId, Secrets};
+use crate::{discord, ChannelId, GuildId, Secrets};
 
 #[derive(Debug)]
 pub(super) struct Templates(Handlebars, GlobalArgs);
@@ -136,6 +135,6 @@ pub(super) struct GuildArgs<'t> {
 
 #[derive(Debug, Serialize)]
 pub(super) struct Guild<'t> {
-    pub(super) id: u64,
+    pub(super) id: GuildId,
     pub(super) name: &'t str,
 }

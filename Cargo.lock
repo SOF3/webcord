@@ -2878,6 +2878,7 @@ name = "webcord"
 version = "0.0.0"
 dependencies = [
  "actix-rt",
+ "actix-threadpool",
  "actix-web",
  "config",
  "derive-new",

@@ -20,8 +20,9 @@ impl Index {
             .optional()?;
         match guild {
             Some(guild) => {
-                let channels = <models::Channel as BelongingToDsl>::belonging_to(&guild)
-                    .load::<models::Channel>(&self.0.get()?)?;
+                let channels =
+                    <models::Channel as BelongingToDsl<&models::Guild>>::belonging_to(&guild)
+                        .load::<models::Channel>(&self.0.get()?)?;
                 let channels = channels
                     .into_iter()
                     .map(|ch| {

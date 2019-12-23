@@ -6,9 +6,9 @@ use actix_web::{HttpResponse, ResponseError};
 
 #[derive(Debug)]
 pub(super) struct UserError {
-    code: StatusCode,
-    inner: Cow<'static, str>,
-    body: Cow<'static, str>,
+    pub(super) code: StatusCode,
+    pub(super) inner: Cow<'static, str>,
+    pub(super) body: Cow<'static, str>,
 }
 
 impl fmt::Display for UserError {
@@ -21,7 +21,7 @@ impl ResponseError for UserError {
     fn error_response(&self) -> HttpResponse {
         log::warn!("User error: {}", self.inner.as_ref());
 
-        let builder = HttpResponse::build(self.code);
+        let mut builder = HttpResponse::build(self.code);
         match &self.body {
             Cow::Borrowed(body) => builder.body(*body),
             Cow::Owned(body) => builder.body(body),

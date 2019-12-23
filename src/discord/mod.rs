@@ -3,6 +3,7 @@ dirmod::all!();
 use std::thread;
 
 use serenity::framework::standard::{macros::*, CommandResult, StandardFramework};
+use serenity::http::raw::Http;
 use serenity::model::prelude::{self as model, Message};
 use serenity::prelude::*;
 
@@ -11,6 +12,7 @@ use crate::Secrets;
 
 pub struct Bridge {
     index: Index,
+    http: Http,
 }
 
 impl Bridge {
@@ -36,7 +38,12 @@ impl Bridge {
         });
         Ok(Self {
             index: index.clone(),
+            http: Http::new_with_token(secrets.discord().token()),
         })
+    }
+
+    fn http(&self) -> &Http {
+        &self.http
     }
 }
 

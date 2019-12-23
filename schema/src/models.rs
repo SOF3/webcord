@@ -1,8 +1,8 @@
-use derive_more::Display;
+// use derive_more::Display;
 use derive_new::new;
-use diesel::deserialize::{FromSql, Queryable};
-use diesel::expression::AsExpression;
-use diesel::sql_types::BigInt;
+// use diesel::deserialize::{FromSql, Queryable};
+// use diesel::expression::AsExpression;
+// use diesel::sql_types::BigInt;
 use getset::{CopyGetters, Getters};
 
 use crate::schema::*;
@@ -54,7 +54,7 @@ pub struct KnownInvite {
     guild_id: GuildId,
 }
 
-#[allow(unused_macros)]
+#[allow(unused_macros)] // TODO fix impl problems and switch to newtype
 macro_rules! snowflake {
     ($($name:ident)*) => {$(
         #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize)]
@@ -79,10 +79,9 @@ macro_rules! snowflake {
         }
     )*};
 }
-#[allow(unused_macros)]
 macro_rules! snowflake2 {
     ($($name:ident)*) => {$(
         pub type $name = i64;
     )*};
 }
-snowflake!(GuildId ChannelId MessageId);
+snowflake2!(GuildId ChannelId MessageId);
