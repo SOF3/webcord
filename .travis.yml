@@ -26,3 +26,4 @@ script:
   - just test
 after_script:
   - ldd target/*/webcord
+  - du -sh target/*/webcord
