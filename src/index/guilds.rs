@@ -1,18 +1,9 @@
-use derive_more::{Display, From};
-use diesel::pg::PgConnection;
-use diesel::prelude::{
-    BelongingToDsl, ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl,
-};
-use diesel::r2d2::ConnectionManager;
+use diesel::prelude::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use webcord_schema::models;
-#[allow(unused_imports)]
-use webcord_schema::schema::{
-    channel_hours::dsl as channel_hours, channels::dsl as channels, guilds::dsl as guilds,
-    known_invites::dsl as known_invites,
-};
+use webcord_schema::schema::guilds::dsl as guilds;
 
 use super::{Index, QueryError};
-use crate::{ChannelInfo, GuildId, GuildInfo, Secrets};
+use crate::GuildId;
 
 impl Index {
     pub fn list_guilds(&self) -> Result<Vec<(GuildId, String)>, QueryError> {

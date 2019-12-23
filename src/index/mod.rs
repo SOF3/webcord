@@ -1,17 +1,10 @@
-#![allow(unused_imports)]
 dirmod::all!();
 
 use derive_more::{Display, From};
 use diesel::pg::PgConnection;
-use diesel::prelude::{BelongingToDsl, OptionalExtension, QueryDsl, RunQueryDsl};
 use diesel::r2d2::ConnectionManager;
-use webcord_schema::models;
-use webcord_schema::schema::{
-    channel_hours::dsl as channel_hours, channels::dsl as channels,
-    known_invites::dsl as known_invites,
-};
 
-use crate::{ChannelInfo, GuildInfo, Secrets};
+use crate::Secrets;
 
 type ConnMan = ConnectionManager<PgConnection>;
 type Pool = r2d2::Pool<ConnMan>;
