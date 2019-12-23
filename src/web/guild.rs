@@ -11,14 +11,19 @@ pub(super) async fn handler(
 ) -> UserResult<HttpResponse> {
     let tmpl = tmpl.into_inner();
     let (guild_id,) = path.into_inner();
-    let guild = block(move || bridge.guild_info(guild_id, false)) .await
+    let guild = block(move || bridge.guild_info(guild_id, false))
+        .await
         .map_err(tmpl.clone().priv_error("Error querying Discord API"))?;
     let data = template::GuildArgs {
         guild: template::Guild {
             id: guild_id,
             name: guild.name(),
         },
-        channels: guild.channels().iter().map(|ch| (ch.id(), ch.name().as_str())).collect(),
+        channels: guild
+            .channels()
+            .iter()
+            .map(|ch| (ch.id(), ch.name().as_str()))
+            .collect(),
     };
     let rendered = tmpl.clone().guild(
         &template::PageArgs {
