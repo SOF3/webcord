@@ -43,7 +43,6 @@ RUN mkdir /webcord
 WORKDIR /webcord
 COPY --from=client /build/build /webcord/build
 RUN cp /build/target/release/webcord /webcord/webcord
-ADD templates templates
 
 RUN useradd webcord
 RUN chown -R webcord:webcord .

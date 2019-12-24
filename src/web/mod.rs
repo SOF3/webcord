@@ -1,9 +1,8 @@
 dirmod::all!(default priv; priv use result);
 
-use std::fmt;
 use std::io;
 
-use actix_web::{error, guard, middleware, web, HttpResponse};
+use actix_web::{guard, middleware, web, HttpResponse};
 
 use crate::index::Index;
 use crate::{discord, Secrets};
@@ -13,14 +12,17 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
     let bridge = web::Data::new(bridge);
     let index = web::Data::new(index);
 
-    let tmpl = template::Templates::try_new(&secrets)?;
-    let tmpl = web::Data::new(tmpl);
+    let global = web::Data::new(html::GlobalArgs {
+        domain: secrets.web().domain().clone(),
+        invite_link: discord::invite_link(*secrets.discord().client_id()),
+        runtime_id: rand::random(),
+    });
 
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .app_data(bridge.clone())
             .app_data(index.clone())
-            .app_data(tmpl.clone())
+            .app_data(global.clone())
             .wrap(middleware::Logger::default())
             .service(index::index)
             .service(assets::script)
@@ -40,13 +42,4 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
     .bind(secrets.web().addr())?
     .start()
     .await
-}
-
-fn internal_error<D: fmt::Debug + fmt::Display + 'static, E: fmt::Display>(
-    user_msg: D,
-) -> impl FnOnce(E) -> error::Error {
-    |err| {
-        log::error!("Error handling request: {}", err);
-        error::ErrorInternalServerError(user_msg)
-    }
 }

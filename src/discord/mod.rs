@@ -104,7 +104,7 @@ impl typemap::Key for IndexKey {
     type Value = Index;
 }
 
-pub fn invite_link<'a>(client_id: u64) -> String {
+pub fn invite_link(client_id: u64) -> String {
     format!(
         "https://discordapp.com/api/oauth2/authorize?client_id={}&permissions=68608&scope=bot",
         client_id

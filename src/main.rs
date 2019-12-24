@@ -1,4 +1,5 @@
 #![feature(async_closure)]
+#![recursion_limit = "1024"]
 
 use std::error::Error;
 use std::fmt::Display;

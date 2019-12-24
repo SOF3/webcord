@@ -5,9 +5,9 @@
   "main": "src/index.js",
   "devDependencies": {
     "glob": "^7.1.6",
-    "purify-css": "^1.2.5",
     "sass": "^1.24.0",
     "typescript": "^3.7.4",
+    "uglifycss": "0.0.29",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10"
   },

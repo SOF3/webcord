@@ -1,29 +1,38 @@
 use actix_web::{web, HttpResponse};
+use serde::Deserialize;
 
-use super::{template, UserResult};
+use super::{html, UserResult};
 use crate::{block, discord};
 
 #[actix_web::get("/guilds")]
 pub(super) async fn handler(
     bridge: web::Data<discord::Bridge>,
-    tmpl: web::Data<template::Templates>,
+    global: web::Data<html::GlobalArgs>,
+    web::Query(page_data): web::Query<PageData>,
 ) -> UserResult<HttpResponse> {
     let guilds = block(move || bridge.list_guilds())
         .await
-        .map_err(tmpl.clone().priv_error("Error querying Discord API"))?;
+        .map_err(global.priv_error("Error querying Discord API"))?; // TODO paginate
     let count = guilds.len();
-    let data = template::GuildsArgs {
-        guilds: &guilds
-            .iter()
-            .map(|(id, name)| (*id, name.as_str()))
-            .collect(),
-    };
-    let rendered = tmpl.guilds(
-        &template::PageArgs {
+    let rendered = html::guilds::render(html::Args {
+        global: global.as_ref(),
+        page: html::PageArgs {
             title: "Guilds mirrored by webcord",
             description: &format!("webcord is mirroring chat from {} guilds", count),
         },
-        &data,
-    )?;
+        local: html::guilds::Local {
+            guilds: &mut guilds.iter().map(|(id, name)| html::guilds::GuildEntry {
+                id: *id,
+                name: name.as_str(),
+            }),
+            current_page: page_data.page,
+            total_pages: 1, // TODO fix
+        },
+    });
     Ok(HttpResponse::Ok().body(rendered))
+}
+
+#[derive(Deserialize)]
+pub(super) struct PageData {
+    page: usize,
 }

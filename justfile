@@ -16,7 +16,7 @@ rust:
 js: materialize
 	cd client && npm run-script build
 
-css: materialize js
+css: materialize
 	cd client && npm run-script css
 
 materialize:
