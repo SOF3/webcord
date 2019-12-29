@@ -93,9 +93,9 @@ dependencies = [
 
 [[package]]
 name = "actix-router"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d814d73bdc83834922d96b7f1215a17186c82703df804a0f1ec9e8dc206ca7c1"
+checksum = "8248b8ec832afa26bbe232b25ec1bb549a095fb441e6958d8a57830866257100"
 dependencies = [
  "bytestring",
  "http 0.2.0",
@@ -210,9 +210,9 @@ dependencies = [
 
 [[package]]
 name = "actix-web"
-version = "2.0.0-rc"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ca77a79f044f2ede682fee8fb2314e884da61e95c4e4b8d56fb6152994213ca"
+checksum = "3158e822461040822f0dbf1735b9c2ce1f95f93b651d7a7aded00b1efbb1f635"
 dependencies = [
  "actix-codec",
  "actix-http",
