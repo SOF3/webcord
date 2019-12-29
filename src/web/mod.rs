@@ -40,6 +40,6 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             )
     })
     .bind(secrets.web().addr())?
-    .start()
+    .run()
     .await
 }
