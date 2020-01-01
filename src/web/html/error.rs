@@ -1,7 +1,15 @@
 use super::{html, lib, Args, Output};
 
-pub fn render<'t>(args: Args<'t, Local<'t>>) -> Output {
-    lib::layout(args, |global, page, local| {
+pub fn render<'t>(
+    Args {
+        global,
+        page,
+        local,
+    }: Args<'t, Local<'t>>,
+) -> Output {
+    lib::layout(
+        global,
+        page,
         html! {
             main {
                 div(class = "container section") {
@@ -9,8 +17,8 @@ pub fn render<'t>(args: Args<'t, Local<'t>>) -> Output {
                     p(class = "light"): local.message;
                 }
             }
-        }
-    })
+        },
+    )
 }
 
 #[derive(Debug, Clone)]

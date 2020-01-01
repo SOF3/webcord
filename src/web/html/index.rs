@@ -1,7 +1,15 @@
 use super::{html, lib, Args, Output};
 
-pub fn render(args: Args<'_, ()>) -> Output {
-    lib::layout(args, |global, page, local| {
+pub fn render<'t>(
+    Args {
+        global,
+        page,
+        local: _,
+    }: Args<'t, ()>,
+) -> Output {
+    lib::layout(
+        global,
+        page,
         html! {
             main {
                 div(class = "section no-pad-bot") {
@@ -45,6 +53,6 @@ pub fn render(args: Args<'_, ()>) -> Output {
                     }
                 }
             }
-        }
-    })
+        },
+    )
 }

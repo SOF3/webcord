@@ -1,11 +1,20 @@
-use super::{html, lib, Args, Output, RenderOnce};
+use super::{html, lib, Args, Output};
 use crate::GuildId;
+use horrorshow::Render;
 
-pub fn render<'t, I>(args: Args<'t, Local<'t, I>>) -> Output
+pub fn render<'t, I>(
+    Args {
+        global,
+        page,
+        local,
+    }: Args<'t, Local<'t, I>>,
+) -> Output
 where
     I: Iterator<Item = GuildEntry<'t>>,
 {
-    lib::layout(args, |global, page, local| {
+    lib::layout(
+        global,
+        page,
         html! {
             main {
                 div(class = "container section") {
@@ -22,11 +31,11 @@ where
                     }
                 }
             }
-        }
-    })
+        },
+    )
 }
 
-fn pages(current: usize, n: usize) -> impl RenderOnce {
+fn pages(current: usize, n: usize) -> impl Render {
     html! {
         div(class = "col s12 m6") {
             : "Page ";

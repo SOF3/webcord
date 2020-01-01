@@ -1,16 +1,24 @@
 use super::{html, lib, Args, Output};
 use crate::{ChannelId, GuildId};
 
-pub fn render<'t>(args: Args<'t, Local<'t>>) -> Output {
-    lib::layout(args, |_, _, _| {
+pub fn render<'t>(
+    Args {
+        global,
+        page,
+        local: _,
+    }: Args<'t, Local<'t>>,
+) -> Output {
+    lib::layout(
+        global,
+        page,
         html! {
             main {
                 div(class = "container section") {
                     : "This will specify information about a guild"
                 }
             }
-        }
-    })
+        },
+    )
 }
 
 #[derive(Debug)]

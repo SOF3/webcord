@@ -1,22 +1,11 @@
-use horrorshow::{html, Render, RenderOnce};
+use super::{html, Critical, GlobalArgs, Output, PageArgs, Render, RenderOnce};
 
-use super::{Args, Critical, GlobalArgs, Output, PageArgs};
-
-pub fn layout<'t, T, R>(
-    mut args: Args<'t, T>,
-    main_block: fn(&GlobalArgs, &PageArgs<'t>, &mut T) -> R,
-) -> Output
-where
-    T: 't,
-    R: RenderOnce + 't,
-{
+pub fn layout<'t>(
+    global: &'t GlobalArgs,
+    page: PageArgs<'t>,
+    main_block: impl RenderOnce + 't,
+) -> Output {
     use horrorshow::{helper::doctype, Template};
-
-    let Args {
-        global,
-        page,
-        local,
-    } = args;
 
     let render = html! {
         : doctype::HTML;
@@ -28,7 +17,7 @@ where
 
             body {
                 : nav(global, &page);
-                : main_block(global, &page, local);
+                : main_block;
                 : foot(global, &page);
             }
         }
@@ -41,7 +30,7 @@ where
 
 fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't {
     html! {
-        title: &page.title;
+        title: page.title;
         meta(charset = "UTF-8");
         meta(name = "viewport", content = "width=device-width, initial-scale=1, shrink-to-fit=no");
         meta(name = "description", content = page.description);
@@ -63,7 +52,7 @@ fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't 
     }
 }
 
-fn nav<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't {
+fn nav<'t>(global: &'t GlobalArgs, _page: &'t PageArgs<'t>) -> impl Render + 't {
     html! {
         nav(role = "navigation", class = "light-green darken-4") {
             div(class = "nav-wrapper container") {
@@ -87,7 +76,7 @@ fn nav<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't {
     }
 }
 
-fn foot<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't {
+fn foot<'t>(global: &'t GlobalArgs, _page: &'t PageArgs<'t>) -> impl Render + 't {
     html! {
         footer(class = "page-footer light-green darken-4") {
             div(class = "container") {

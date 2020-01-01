@@ -2,7 +2,7 @@ use std::convert::TryInto;
 use std::fmt;
 
 use actix_web::http::StatusCode;
-use horrorshow::{html, RenderOnce};
+use horrorshow::{owned_html as html, Render, RenderOnce};
 
 use super::{Critical, UserError};
 

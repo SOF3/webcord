@@ -33,7 +33,7 @@ impl ResponseError for UserError {
 
 pub(super) type UserResult<T = (), E = UserError> = std::result::Result<T, E>;
 
-pub(super) struct Critical;
+pub struct Critical;
 
 impl From<Critical> for UserError {
     fn from(_: Critical) -> Self {
