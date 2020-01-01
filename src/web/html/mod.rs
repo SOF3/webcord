@@ -2,13 +2,13 @@ use std::convert::TryInto;
 use std::fmt;
 
 use actix_web::http::StatusCode;
-use typed_html::{html, text};
+use horrorshow::{html, RenderOnce};
 
-use super::UserError;
+use super::{Critical, UserError};
 
 dirmod::all!(default pub(super); priv use lib);
 
-type Dom = Box<dyn typed_html::elements::FlowContent<String>>;
+type Output = Result<String, Critical>;
 
 #[derive(Debug)]
 pub struct Args<'t, T> {
@@ -44,10 +44,13 @@ impl GlobalArgs {
             },
             local: error::Local { message: &message },
         });
-        UserError {
-            code,
-            inner: message.into(),
-            body: body.into(),
+        match body {
+            Ok(body) => UserError {
+                code,
+                inner: message.into(),
+                body: body.into(),
+            },
+            Err(critical) => critical.into(),
         }
     }
 
@@ -66,7 +69,7 @@ impl GlobalArgs {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PageArgs<'t> {
     pub title: &'t str,
     pub description: &'t str,

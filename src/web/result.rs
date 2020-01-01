@@ -19,7 +19,9 @@ impl fmt::Display for UserError {
 
 impl ResponseError for UserError {
     fn error_response(&self) -> HttpResponse {
-        log::warn!("User error: {}", self.inner.as_ref());
+        if self.inner.as_ref().len() > 0 {
+            log::warn!("User error: {}", self.inner.as_ref());
+        }
 
         let mut builder = HttpResponse::build(self.code);
         match &self.body {
@@ -30,3 +32,15 @@ impl ResponseError for UserError {
 }
 
 pub(super) type UserResult<T = (), E = UserError> = std::result::Result<T, E>;
+
+pub(super) struct Critical;
+
+impl From<Critical> for UserError {
+    fn from(_: Critical) -> Self {
+        UserError {
+            code: StatusCode::INTERNAL_SERVER_ERROR,
+            inner: Cow::Borrowed(""),
+            body: Cow::Borrowed("A critical internal error happened. We can't even display a beautiful error page :("),
+        }
+    }
+}

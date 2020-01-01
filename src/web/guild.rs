@@ -30,6 +30,6 @@ pub(super) async fn handler(
                 .map(|ch| (ch.id(), ch.name().as_str()))
                 .collect(),
         },
-    });
+    })?;
     Ok(HttpResponse::Ok().body(rendered))
 }

@@ -11,13 +11,11 @@ pub(super) async fn index(global: web::Data<html::GlobalArgs>) -> UserResult<Htt
             description: "webcord: Chat log mirror for Discord",
         },
         local: (),
-    });
+    })?;
     Ok(HttpResponse::Ok().body(rendered))
 }
 
-pub(super) async fn error404(
-    global: web::Data<html::GlobalArgs>,
-) -> actix_web::Result<HttpResponse> {
+pub(super) async fn error404(global: web::Data<html::GlobalArgs>) -> UserResult<HttpResponse> {
     let rendered = html::error::render(html::Args {
         global: global.as_ref(),
         page: html::PageArgs {
@@ -27,6 +25,6 @@ pub(super) async fn error404(
         local: html::error::Local {
             message: "This route does not exist. Perhaps there would be something here one day?",
         },
-    });
+    })?;
     Ok(HttpResponse::NotFound().body(rendered))
 }

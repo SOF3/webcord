@@ -28,7 +28,7 @@ pub(super) async fn handler(
             current_page: page_data.page,
             total_pages: 1, // TODO fix
         },
-    });
+    })?;
     Ok(HttpResponse::Ok().body(rendered))
 }
 

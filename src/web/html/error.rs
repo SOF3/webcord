@@ -1,13 +1,15 @@
-use super::{html, lib, text, Args};
+use super::{html, lib, Args, Output};
 
-pub fn render<'t>(args: Args<'t, Local<'t>>) -> String {
-    lib::layout(args, |args| {
-        html! {<main>
-            <div class="container section">
-                <h3 class="">{ text!("{}", args.page.title) }</h3>
-                <p class="light">{ text!("{}", args.local.message) }</p>
-            </div>
-        </main>}
+pub fn render<'t>(args: Args<'t, Local<'t>>) -> Output {
+    lib::layout(args, |global, page, local| {
+        html! {
+            main {
+                div(class = "container section") {
+                    h3: page.title;
+                    p(class = "light"): local.message;
+                }
+            }
+        }
     })
 }
 

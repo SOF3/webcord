@@ -23,6 +23,7 @@ diesel = {version = "1.4.3", features = ["postgres", "r2d2", "chrono"]}
 dirmod = "0.2.0-alpha.1"
 dotenv = "0.15.0"
 getset = "0.0.9"
+horrorshow = "0.7.0"
 lazy_static = "1.4.0"
 log = "0.4.8"
 pretty_env_logger = "0.3.1"
@@ -30,6 +31,5 @@ r2d2 = "0.8.8"
 rand = "0.7.2"
 serde = {version = "1.0.104", features = ["std", "derive"]}
 serenity = "0.7.4"
-typed-html = "0.2.1"
 typemap = "0.3.3"
 webcord-schema = {path = "schema"}
