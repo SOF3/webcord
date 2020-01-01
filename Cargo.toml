@@ -33,3 +33,8 @@ serde = {version = "1.0.104", features = ["std", "derive"]}
 serenity = "0.7.4"
 typemap = "0.3.3"
 webcord-schema = {path = "schema"}
+
+[profile.dev]
+
+[profile.release]
+lto = true
