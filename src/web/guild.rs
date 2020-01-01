@@ -5,6 +5,7 @@ use crate::{block, discord, GuildId};
 
 #[actix_web::get("/guilds/{guild}")]
 pub(super) async fn handler(
+    login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
     path: web::Path<(GuildId,)>,
@@ -18,6 +19,7 @@ pub(super) async fn handler(
         page: html::PageArgs {
             title: guild.name(),
             description: &format!("Chat logs for the Discord guild \"{}\"", guild.name()),
+            login: login.as_ref().map(|login| &login.disp),
         },
         local: html::guild::Local {
             guild: html::guild::Guild {

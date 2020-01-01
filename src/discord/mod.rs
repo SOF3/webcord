@@ -61,10 +61,9 @@ fn help(ctx: &mut Context, msg: &Message) -> CommandResult {
         let secrets = tymap.get::<SecretsKey>().unwrap();
         format!(
             "Mirroring this server at {domain}/guilds/{guild} live.\n\
-             Invite this bot to your server: {invite}",
+             Invite this bot to your server: {domain}/invite",
             domain = secrets.web().domain(),
             guild = msg.guild_id.map_or(0, |id| *id.as_u64()),
-            invite = invite_link(*secrets.discord().client_id()),
         )
     };
 
@@ -80,10 +79,6 @@ impl EventHandler for Handler {
         let tymap = ctx.data.read();
         let secrets = tymap.get::<SecretsKey>().unwrap();
         log::info!("Live on {} guilds", data.guilds.len());
-        log::info!(
-            "Invite link: {}",
-            invite_link(*secrets.discord().client_id())
-        );
         ctx.set_presence(
             Some(model::Activity::streaming(
                 &format!("chat log on {}", secrets.web().domain()),
@@ -102,11 +97,4 @@ impl typemap::Key for SecretsKey {
 struct IndexKey;
 impl typemap::Key for IndexKey {
     type Value = Index;
-}
-
-pub fn invite_link(client_id: u64) -> String {
-    format!(
-        "https://discordapp.com/api/oauth2/authorize?client_id={}&permissions=68608&scope=bot",
-        client_id
-    )
 }

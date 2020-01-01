@@ -1,9 +1,26 @@
 use super::{html, Critical, GlobalArgs, Output, PageArgs, Render, RenderOnce};
 
+pub fn minimal_layout<'t>(
+    global: &'t GlobalArgs,
+    page: PageArgs<'t>,
+    main_block: impl RenderOnce + 't,
+) -> Output {
+    layout_impl(global, page, main_block, true)
+}
+
 pub fn layout<'t>(
     global: &'t GlobalArgs,
     page: PageArgs<'t>,
     main_block: impl RenderOnce + 't,
+) -> Output {
+    layout_impl(global, page, main_block, false)
+}
+
+pub fn layout_impl<'t>(
+    global: &'t GlobalArgs,
+    page: PageArgs<'t>,
+    main_block: impl RenderOnce + 't,
+    minimal: bool,
 ) -> Output {
     use horrorshow::{helper::doctype, Template};
 
@@ -16,7 +33,7 @@ pub fn layout<'t>(
             }
 
             body {
-                : nav(global, &page);
+                : nav(global, &page, minimal);
                 : main_block;
                 : foot(global, &page);
             }
@@ -52,7 +69,7 @@ fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't 
     }
 }
 
-fn nav<'t>(global: &'t GlobalArgs, _page: &'t PageArgs<'t>) -> impl Render + 't {
+fn nav<'t>(_global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> impl Render + 't {
     html! {
         nav(role = "navigation", class = "light-green darken-4") {
             div(class = "nav-wrapper container") {
@@ -60,14 +77,35 @@ fn nav<'t>(global: &'t GlobalArgs, _page: &'t PageArgs<'t>) -> impl Render + 't 
                 ul(class = "right") {
                     li {
                         a(href = "/guilds") {
-                            i(class = "material-icons"): "view_list";
+                            : icon("view_list");
                             : "Guilds";
                         }
                     }
-                    li {
-                        a(href = &global.invite_link) {
-                            i(class = "material-icons"): "add";
-                            : "Invite";
+                    @ if !minimal {
+                        @ if let Some(login) = page.login {
+                            li {
+                                a(href = "/account") {
+                                    : icon("account_circle");
+                                    : "Manage";
+                                }
+                            }
+                            li {
+                                a(href = "/logout") {
+                                    : icon("power_settings_new");
+                                    : "Logout";
+                                }
+                            }
+                            li {
+                                img(src = format_args!("https://cdn.discordapp.com/avatars/{}/{}.png", login.id, login.avatar));
+                                : format_args!("{}#{}", &login.username, &login.discrim)
+                            }
+                        } else {
+                            li {
+                                a(href = "/invite") {
+                                    : icon("add");
+                                    : "Login/Invite";
+                                }
+                            }
                         }
                     }
                 }
@@ -102,5 +140,11 @@ fn foot<'t>(global: &'t GlobalArgs, _page: &'t PageArgs<'t>) -> impl Render + 't
         }
 
         script(src = format_args!("/script.js?{}", global.runtime_id)) {}
+    }
+}
+
+fn icon(name: &'static str) -> impl Render {
+    html! {
+        i(class = "material-icons"): name;
     }
 }

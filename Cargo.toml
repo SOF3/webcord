@@ -14,6 +14,7 @@ description = "Mirrors Discord chat logs on webpages in a searchable fashion"
 
 [dependencies]
 actix-rt = "1.0.0-alpha.3" # selected by actix-web
+actix-session = "0.3.0"
 actix-threadpool = "0.3.1"
 actix-web = "2.0.0"
 config = "0.10.1"
@@ -22,6 +23,7 @@ derive_more = "0.99.2"
 diesel = {version = "1.4.3", features = ["postgres", "r2d2", "chrono"]}
 dirmod = "0.2.0-alpha.1"
 dotenv = "0.15.0"
+futures = "0.3.1"
 getset = "0.0.9"
 horrorshow = "0.7.0"
 lazy_static = "1.4.0"

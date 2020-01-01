@@ -21,8 +21,7 @@ pub fn render<'t>(
                                     Discord server without registering";
                         }
                         div(class = "row center") {
-                            a(class = "btn-large indigo accent-1", href = &global.invite_link):
-                                "Invite to Discord";
+                            a(class = "btn-large indigo accent-1", href = "/invite"): "Invite to Discord";
                         }
                     }
                 }

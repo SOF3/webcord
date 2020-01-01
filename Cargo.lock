@@ -73,6 +73,7 @@ dependencies = [
  "pin-project",
  "rand 0.7.2",
  "regex",
+ "ring",
  "serde 1.0.104",
  "serde_json",
  "serde_urlencoded 0.6.1",
@@ -144,6 +145,22 @@ checksum = "7a5ecef49693fcfe2c13a34c7218eb5b7898ff3fbe334db8445759f871fec2df"
 dependencies = [
  "futures-util",
  "pin-project",
+]
+
+[[package]]
+name = "actix-session"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ca833a08799c95281204f9cc76223da4d12d2caa03de24362b3e268c60da328c"
+dependencies = [
+ "actix-service",
+ "actix-web",
+ "bytes 0.5.3",
+ "derive_more",
+ "futures 0.3.1",
+ "serde 1.0.104",
+ "serde_json",
+ "time",
 ]
 
 [[package]]
@@ -2770,6 +2787,7 @@ name = "webcord"
 version = "0.0.0"
 dependencies = [
  "actix-rt",
+ "actix-session",
  "actix-threadpool",
  "actix-web",
  "config",
@@ -2778,6 +2796,7 @@ dependencies = [
  "diesel",
  "dirmod",
  "dotenv",
+ "futures 0.3.1",
  "getset",
  "horrorshow",
  "lazy_static",

@@ -6,6 +6,7 @@ use crate::{block, discord};
 
 #[actix_web::get("/guilds")]
 pub(super) async fn handler(
+    login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
     web::Query(page_data): web::Query<PageData>,
@@ -19,6 +20,7 @@ pub(super) async fn handler(
         page: html::PageArgs {
             title: "Guilds mirrored by webcord",
             description: &format!("webcord is mirroring chat from {} guilds", count),
+            login: login.as_ref().map(|login| &login.disp),
         },
         local: html::guilds::Local {
             guilds: &mut guilds.iter().map(|(id, name)| html::guilds::GuildEntry {
