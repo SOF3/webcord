@@ -42,6 +42,7 @@ RUN cargo build --release
 RUN mkdir /webcord
 WORKDIR /webcord
 COPY --from=client /build/build /webcord/build
+ADD static /webcord/static
 RUN cp /build/target/release/webcord /webcord/webcord
 
 RUN useradd webcord

@@ -1,3 +1,5 @@
+#![deny(unused_must_use)]
+
 #![feature(async_closure)]
 #![recursion_limit = "1024"]
 

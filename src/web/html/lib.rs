@@ -96,7 +96,9 @@ fn nav<'t>(_global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> im
                                 }
                             }
                             li {
-                                img(src = format_args!("https://cdn.discordapp.com/avatars/{}/{}.png", login.id, login.avatar));
+                                @ if let Some(avatar) = &login.avatar {
+                                    img(src = format_args!("https://cdn.discordapp.com/avatars/{}/{}.png", login.id, avatar));
+                                }
                                 : format_args!("{}#{}", &login.username, &login.discrim)
                             }
                         } else {

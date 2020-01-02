@@ -1,28 +1,44 @@
-dirmod::all!(default priv; priv use result);
+dirmod::all!(default priv; priv use result, session, entropy);
 
 use std::io;
 
-use actix_session::{CookieSession, Session};
-use actix_web::{cookie, dev, guard, middleware, web, FromRequest, HttpRequest, HttpResponse};
-use derive_more::{Deref, From};
+use actix_session::CookieSession;
+use actix_web::{cookie, guard, middleware, web, HttpResponse};
+use percent_encoding as pe;
 
 use crate::index::Index;
 use crate::{discord, Secrets};
 
 #[actix_rt::main]
 pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io::Result<()> {
+    let secrets_data = web::Data::new(secrets.clone());
     let bridge = web::Data::new(bridge);
     let index = web::Data::new(index);
+    let entropy = web::Data::new(Entropy::new(secrets.web().entropy()));
+    let common_client = web::Data::new(reqwest::Client::new());
 
     let global = web::Data::new(html::GlobalArgs {
         domain: secrets.web().domain().clone(),
         runtime_id: rand::random(),
+        invite_link: format!(
+            "https://discordapp.com/oauth2/authorize?\
+            client_id={client_id}&\
+            permissions=68608&\
+            redirect_uri={domain}%2Fauth&\
+            response_type=code&\
+            scope=identify%20bot",
+            client_id = *secrets.discord().client_id(),
+            domain = pe::utf8_percent_encode(secrets.web().domain(), pe::NON_ALPHANUMERIC),
+        ),
     });
 
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
+            .app_data(secrets_data.clone())
             .app_data(bridge.clone())
             .app_data(index.clone())
+            .app_data(entropy.clone())
+            .app_data(common_client.clone())
             .app_data(global.clone())
             .wrap(middleware::Logger::default())
             .wrap(
@@ -50,33 +66,16 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
     .await
 }
 
-#[derive(Debug, Deref, From, Default)]
-pub struct Login(Option<LoginInfo>);
+type Login = SessData<LoginInfo>;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
-pub struct LoginInfo {
+struct LoginInfo {
     token: String,
     disp: html::UserDisp,
 }
 
-impl FromRequest for Login {
-    type Error = <Session as FromRequest>::Error;
-    type Future = futures::future::Map<
-        <Session as FromRequest>::Future,
-        fn(Result<Session, Self::Error>) -> Result<Self, Self::Error>,
-    >;
-    type Config = ();
-
-    fn from_request(req: &HttpRequest, payload: &mut dev::Payload) -> Self::Future {
-        use futures::future::FutureExt;
-
-        <Session as FromRequest>::from_request(req, payload).map(|session| {
-            let session = session?;
-            let login = match session.get::<LoginInfo>("login")? {
-                Some(info) => Some(info).into(),
-                None => Self::default(),
-            };
-            Ok(login)
-        })
+impl SessField for LoginInfo {
+    fn key() -> &'static str {
+        "login"
     }
 }

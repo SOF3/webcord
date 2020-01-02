@@ -33,12 +33,12 @@ pub struct Local<'t> {
 }
 
 impl GlobalArgs {
-    pub(in crate::web) fn user_error<C>(&self, code: C, inner: impl fmt::Display) -> UserError
+    pub(in crate::web) fn user_error<C>(&self, code: C, message: impl fmt::Display) -> UserError
     where
         C: TryInto<StatusCode>,
         C::Error: fmt::Debug,
     {
-        let message = inner.to_string();
+        let message = message.to_string();
         let code = code.try_into().expect("Invalid status code");
         let body = super::error::render(Args {
             global: &self,

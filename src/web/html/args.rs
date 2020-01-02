@@ -9,6 +9,7 @@ pub struct Args<'t, T> {
 pub struct GlobalArgs {
     pub domain: String,
     pub runtime_id: u64,
+    pub invite_link: String,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -23,5 +24,5 @@ pub struct UserDisp {
     pub id: u64,
     pub username: String,
     pub discrim: String,
-    pub avatar: u64,
+    pub avatar: Option<String>,
 }
