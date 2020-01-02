@@ -37,14 +37,14 @@ where
 
 fn pages(current: usize, n: usize) -> impl Render {
     html! {
-        div(class = "col s12 m6") {
-            : "Page ";
+        div(class = "col s12 m6 input-field") {
             select(name = "guilds-select-page", id = "guilds-select-page") {
                 @ for i in 1..=n {
-                    option(value = format_args!("{}", i), selected ?= (i == current)): i;
+                    option(value = format_args!("{}", i), selected ?= (i == current)):
+                        format_args!("Page {} of {}", i, n);
                 }
             }
-            : format_args!(" of {}", n);
+            label: "Select page:";
         }
     }
 }

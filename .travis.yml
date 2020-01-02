@@ -24,6 +24,7 @@ install:
 script:
   - just build
   - just test
+  - touch schema/src/lib.rs && just build # Test the performance of recompiling only the two source crates
 after_script:
   - ldd target/*/webcord
   - du -sh target/*/webcord
