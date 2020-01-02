@@ -24,15 +24,16 @@ impl<T: SessField + Serialize> Deref for SessData<T> {
     }
 }
 
-impl<T: SessField+Serialize>SessData<T>{
+impl<T: SessField + Serialize> SessData<T> {
     pub(super) fn write(&mut self) -> SessionWriteGuard<'_, T> {
         SessionWriteGuard(self)
     }
 }
 
-pub(super) struct SessionWriteGuard<'t, T: SessField+Serialize>(&'t mut SessData<T>);
+#[derive(Debug)]
+pub(super) struct SessionWriteGuard<'t, T: SessField + Serialize>(&'t mut SessData<T>);
 
-impl<'t,T: SessField + Serialize> Deref for SessionWriteGuard<'t, T> {
+impl<'t, T: SessField + Serialize> Deref for SessionWriteGuard<'t, T> {
     type Target = Option<T>;
 
     fn deref(&self) -> &Option<T> {
@@ -40,7 +41,7 @@ impl<'t,T: SessField + Serialize> Deref for SessionWriteGuard<'t, T> {
     }
 }
 
-impl<'t,T: SessField + Serialize> DerefMut for SessionWriteGuard<'t, T> {
+impl<'t, T: SessField + Serialize> DerefMut for SessionWriteGuard<'t, T> {
     fn deref_mut(&mut self) -> &mut Option<T> {
         &mut self.0.value
     }
@@ -76,10 +77,7 @@ impl<T: SessField + Serialize + for<'de> Deserialize<'de>> FromRequest for SessD
                 Some(t) => Some(t),
                 None => None,
             };
-            let data = Self {
-                session,
-                value,
-            };
+            let data = Self { session, value };
             Ok(data)
         })
     }

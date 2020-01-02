@@ -13,7 +13,7 @@ pub(super) async fn invite(global: web::Data<html::GlobalArgs>) -> HttpResponse 
 
 #[actix_web::get("/auth")]
 pub(super) async fn login(
-mut session: super::Login,
+    mut session: super::Login,
     args: web::Query<LoginArgs>,
     secrets: web::Data<Secrets>,
     global: web::Data<html::GlobalArgs>,
@@ -49,10 +49,10 @@ mut session: super::Login,
         })
         .send()
         .await
-        .map_err(global.priv_error("Invalid token"))?
+        .map_err(global.priv_error("Error identifying user"))?
         .json::<TokenResponse>()
         .await
-        .map_err(global.priv_error("Error parsing JSON"))?;
+        .map_err(global.priv_error("Error identifying user"))?;
 
     if !resp.scope.split(" ").any(|scope| scope == "identify") {
         return Err(global.user_error(401, "Requested identify scope, did not get identify"));
@@ -60,36 +60,40 @@ mut session: super::Login,
 
     #[derive(Deserialize)]
     struct CurrentUserResponse {
-        id: u64,
+        id: String,
         username: String,
         discriminator: String,
         avatar: Option<String>,
     }
-    let user = common.get("https://discordapp.com/api/users/@me")
+    let user = common
+        .get("https://discordapp.com/api/users/@me")
         .bearer_auth(&resp.access_token)
         .send()
         .await
-        .map_err(global.priv_error("Failed to identify user"))?
+        .map_err(global.priv_error("Error identifying user"))?
         .json::<CurrentUserResponse>()
         .await
-        .map_err(global.priv_error("Error parsing JSON"))?;
+        .map_err(global.priv_error("Error identifying user"))?;
 
     {
         let mut write = session.write();
         *write = Some(super::LoginInfo {
-            token: resp.access_token,
+            // token: resp.access_token,
             disp: super::html::UserDisp {
-                id: user.id,
+                id: user
+                    .id
+                    .parse()
+                    .map_err(global.priv_error("Error identifying user"))?,
                 username: user.username.clone(),
                 discrim: user.discriminator.clone(),
                 avatar: user.avatar,
-            }
+            },
         });
     }
 
     Ok(HttpResponse::Found()
-       .header(http::header::LOCATION, "/account")
-       .finish())
+        .header(http::header::LOCATION, "/account")
+        .finish())
 }
 
 #[derive(Deserialize)]

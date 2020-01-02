@@ -36,5 +36,8 @@ pub(super) async fn handler(
 
 #[derive(Deserialize)]
 pub(super) struct PageData {
+    #[serde(default = "default_one")]
     page: usize,
 }
+
+fn default_one() -> usize { 1 }

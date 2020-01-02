@@ -49,6 +49,7 @@ fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't 
     html! {
         title: page.title;
         meta(charset = "UTF-8");
+        meta(http-equiv = "X-UA-Compatible", content = "chrome=1")
         meta(name = "viewport", content = "width=device-width, initial-scale=1, shrink-to-fit=no");
         meta(name = "description", content = page.description);
         meta(name = "keywords", content = "discord,chat,log,mirror,message,history");
@@ -69,46 +70,49 @@ fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't 
     }
 }
 
-fn nav<'t>(_global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> impl Render + 't {
+fn nav<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> impl Render + 't {
     html! {
         nav(role = "navigation", class = "light-green darken-4") {
-            div(class = "nav-wrapper container") {
-                a(id = "logo-container", href = "/", class = "brand-logo"): "webcord";
-                ul(class = "right") {
-                    li {
-                        a(href = "/guilds") {
-                            : icon("view_list");
-                            : "Guilds";
-                        }
+            div(class = "nav-wrapper") {
+                div(class = "container") {
+                    a(id = "logo-container", href = "/", class = "brand-logo"): "webcord";
+                    ul(class = "right hide-on-med-and-down"): side_nav(global, page, minimal);
+                }
+                a(href = "#", data-target = "mobile-menu", class = "sidenav-trigger") : icon("menu");
+                ul(class = "sidenav", id = "mobile-menu"): side_nav(global, page, minimal);
+            }
+        }
+    }
+}
+
+fn side_nav<'t>(_global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> impl Render + 't {
+    html! {
+        li {
+            a(href = "/guilds") {
+                : icon("view_list");
+                : "Guilds";
+            }
+        }
+        @ if !minimal {
+            @ if let Some(login) = page.login {
+                li {
+                    a(href = "/account") {
+                        : icon("account_circle");
+                        : "Manage";
                     }
-                    @ if !minimal {
-                        @ if let Some(login) = page.login {
-                            li {
-                                a(href = "/account") {
-                                    : icon("account_circle");
-                                    : "Manage";
-                                }
-                            }
-                            li {
-                                a(href = "/logout") {
-                                    : icon("power_settings_new");
-                                    : "Logout";
-                                }
-                            }
-                            li {
-                                @ if let Some(avatar) = &login.avatar {
-                                    img(src = format_args!("https://cdn.discordapp.com/avatars/{}/{}.png", login.id, avatar));
-                                }
-                                : format_args!("{}#{}", &login.username, &login.discrim)
-                            }
-                        } else {
-                            li {
-                                a(href = "/invite") {
-                                    : icon("add");
-                                    : "Login/Invite";
-                                }
-                            }
-                        }
+                }
+                li {
+                    a(href = "/logout") {
+                        : icon("power_settings_new");
+                        : "Logout";
+                    }
+                    // TODO: Find a place to put : format_args!("{}#{}", &login.username, &login.discrim)
+                }
+            } else {
+                li {
+                    a(href = "/invite") {
+                        : icon("add");
+                        : "Manage/Invite";
                     }
                 }
             }
