@@ -40,4 +40,6 @@ pub(super) struct PageData {
     page: usize,
 }
 
-fn default_one() -> usize { 1 }
+fn default_one() -> usize {
+    1
+}

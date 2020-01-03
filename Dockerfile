@@ -21,7 +21,7 @@ RUN /just css
 FROM rustlang/rust:nightly-buster-slim AS server
 # Setup build directory
 RUN mkdir /build
-RUN apt-get update && apt-get install -y libpq-dev
+RUN apt-get update && apt-get install -y libpq-dev pkg-config libssl-dev
 RUN cargo install diesel_cli --no-default-features --features postgres
 WORKDIR /build
 # Only build dependencies first since it is the most time-consuming part

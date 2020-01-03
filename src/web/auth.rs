@@ -1,14 +1,16 @@
-use actix_web::{http, web, HttpResponse};
+use std::time;
+
+use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 use super::{html, UserResult};
 use crate::Secrets;
 
+const REQUIRED_SCOPES: [&'static str; 3] = ["identify", "bot", "guilds"];
+
 #[actix_web::get("/invite")]
 pub(super) async fn invite(global: web::Data<html::GlobalArgs>) -> HttpResponse {
-    HttpResponse::PermanentRedirect()
-        .header(http::header::LOCATION, global.invite_link.as_str())
-        .finish()
+    super::redirect(&global.invite_link)
 }
 
 #[actix_web::get("/auth")]
@@ -19,6 +21,8 @@ pub(super) async fn login(
     global: web::Data<html::GlobalArgs>,
     common: web::Data<reqwest::Client>,
 ) -> UserResult<HttpResponse> {
+    use itertools::Itertools;
+
     #[derive(Serialize)]
     struct TokenForm<'t> {
         client_id: u64,
@@ -45,7 +49,7 @@ pub(super) async fn login(
             grant_type: "authorization_code",
             code: &args.code,
             redirect_uri: &format!("{}{}", secrets.web().domain(), "/auth"),
-            scope: "identify bot",
+            scope: &REQUIRED_SCOPES.iter().join(" "),
         })
         .send()
         .await
@@ -54,8 +58,14 @@ pub(super) async fn login(
         .await
         .map_err(global.priv_error("Error identifying user"))?;
 
-    if !resp.scope.split(" ").any(|scope| scope == "identify") {
-        return Err(global.user_error(401, "Requested identify scope, did not get identify"));
+    for required in &REQUIRED_SCOPES {
+        if !resp.scope.split(" ").any(|scope| &scope == required) {
+            use itertools::Itertools;
+            return Err(global.user_error(
+                401,
+                format!("Required scopes: {}", REQUIRED_SCOPES.iter().join(" ")),
+            ));
+        }
     }
 
     #[derive(Deserialize)]
@@ -78,7 +88,8 @@ pub(super) async fn login(
     {
         let mut write = session.write();
         *write = Some(super::LoginInfo {
-            // token: resp.access_token,
+            timeout: time::SystemTime::now() + time::Duration::from_secs(3600),
+            token: resp.access_token,
             disp: super::html::UserDisp {
                 id: user
                     .id
@@ -91,14 +102,13 @@ pub(super) async fn login(
         });
     }
 
-    Ok(HttpResponse::Found()
-        .header(http::header::LOCATION, "/account")
-        .finish())
+    Ok(super::redirect(format!("/account/{}", args.guild_id))) // TODO redirect to /account/{guild}
 }
 
 #[derive(Deserialize)]
 pub(super) struct LoginArgs {
     code: String,
+    guild_id: u64,
 }
 
 #[actix_web::get("/logout")]
@@ -107,7 +117,5 @@ pub(super) async fn logout(mut session: super::Login) -> UserResult<HttpResponse
         let mut write = session.write();
         *write = None;
     }
-    Ok(HttpResponse::Found()
-        .header(http::header::LOCATION, "/")
-        .finish())
+    Ok(super::redirect("/"))
 }

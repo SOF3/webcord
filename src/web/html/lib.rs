@@ -85,7 +85,11 @@ fn nav<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> imp
     }
 }
 
-fn side_nav<'t>(_global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> impl Render + 't {
+fn side_nav<'t>(
+    _global: &'t GlobalArgs,
+    page: &'t PageArgs<'t>,
+    minimal: bool,
+) -> impl Render + 't {
     html! {
         li {
             a(href = "/guilds") {
@@ -94,7 +98,7 @@ fn side_nav<'t>(_global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) 
             }
         }
         @ if !minimal {
-            @ if let Some(login) = page.login {
+            @ if let Some(_login) = page.login {
                 li {
                     a(href = "/account") {
                         : icon("account_circle");

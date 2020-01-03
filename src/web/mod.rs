@@ -1,9 +1,10 @@
 dirmod::all!(default priv; priv use result, session, entropy);
 
 use std::io;
+use std::time;
 
 use actix_session::CookieSession;
-use actix_web::{guard, middleware, web, HttpResponse};
+use actix_web::{guard, http, middleware, web, HttpResponse};
 use percent_encoding as pe;
 
 use crate::index::Index;
@@ -28,7 +29,7 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             permissions=68608&\
             redirect_uri={domain}%2Fauth&\
             response_type=code&\
-            scope=identify%20bot",
+            scope=identify%20bot%20guilds",
             client_id = *secrets.discord().client_id(),
             domain = pe::utf8_percent_encode(secrets.web().domain(), pe::NON_ALPHANUMERIC),
         ),
@@ -50,6 +51,7 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             .service(auth::invite)
             .service(auth::login)
             .service(auth::logout)
+            .service(account::handler)
             .service(guild::handler)
             .service(guilds::handler)
             .default_service(
@@ -71,7 +73,8 @@ type Login = SessData<LoginInfo>;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 struct LoginInfo {
-    // token: String,
+    timeout: time::SystemTime,
+    token: String,
     disp: html::UserDisp,
 }
 
@@ -79,4 +82,10 @@ impl SessField for LoginInfo {
     fn key() -> &'static str {
         "login"
     }
+}
+
+fn redirect<S: AsRef<str>>(path: S) -> HttpResponse {
+    HttpResponse::Found()
+        .header(http::header::LOCATION, path.as_ref())
+        .finish()
 }
