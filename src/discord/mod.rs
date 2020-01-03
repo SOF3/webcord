@@ -8,6 +8,7 @@ use serenity::model::prelude::{self as model, Message};
 use serenity::prelude::*;
 
 use crate::index::Index;
+use crate::GuildId;
 use crate::Secrets;
 
 pub struct Bridge {
@@ -86,6 +87,20 @@ impl EventHandler for Handler {
             )),
             model::OnlineStatus::Online,
         );
+    }
+
+    fn guild_create(&self, ctx: Context, guild: model::Guild, is_new: bool) {
+        if !is_new {
+            return;
+        }
+
+        log::info!("Joined guild {} in {}", &guild.name, &guild.region);
+
+        let tymap = ctx.data.read();
+        let index = tymap.get::<IndexKey>().unwrap();
+        if let Err(err) = index.new_join(*guild.id.as_u64() as GuildId, &guild.name) {
+            log::error!("Error registering new guild: {}", err);
+        }
     }
 }
 

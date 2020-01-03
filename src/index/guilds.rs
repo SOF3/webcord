@@ -16,7 +16,10 @@ impl Index {
             .collect())
     }
 
-    pub fn filter_enabled(&self, list: impl IntoIterator<Item = GuildId>) -> Result<Vec<FilterResult>, QueryError> {
+    pub fn filter_enabled(
+        &self,
+        list: impl IntoIterator<Item = GuildId>,
+    ) -> Result<Vec<FilterResult>, QueryError> {
         let guilds = guilds::guilds
             .select((guilds::id, guilds::listed))
             .filter(guilds::id.eq_any(list))
@@ -25,6 +28,13 @@ impl Index {
             .into_iter()
             .map(|(guild_id, listed)| FilterResult { guild_id, listed })
             .collect())
+    }
+
+    pub fn new_join(&self, id: GuildId, name: &str) -> Result<(), QueryError> {
+        diesel::insert_into(guilds::guilds)
+            .values(&[models::Guild::new(id, name.to_string(), false)][..])
+            .execute(&self.0.get()?)?;
+        Ok(())
     }
 }
 

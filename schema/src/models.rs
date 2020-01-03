@@ -34,7 +34,7 @@ pub struct Channel {
     cache_desc: String,
 }
 
-#[derive(Identifiable, Queryable, new, Getters, CopyGetters)]
+#[derive(Identifiable, Insertable, Queryable, new, Getters, CopyGetters)]
 pub struct Guild {
     #[get_copy = "pub"]
     id: GuildId,

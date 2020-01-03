@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use actix_web::{web, HttpResponse};
 
-use crate::GuildId;
-use crate::index::Index;
 use super::{html, UserResult};
+use crate::index::Index;
+use crate::GuildId;
 
 #[actix_web::get("/account")]
 pub(super) async fn handler(
@@ -40,9 +40,10 @@ pub(super) async fn handler(
         .iter()
         .filter(|guild| guild.permissions & 8 == 8)
         .map(|guild| (guild.id.parse::<u64>().unwrap_or(0) as GuildId, guild))
-        .collect::<HashMap<_,_>>();
+        .collect::<HashMap<_, _>>();
 
-    let mut enabled = index.filter_enabled(with_admin.keys().copied())
+    let mut enabled = index
+        .filter_enabled(with_admin.keys().copied())
         .map_err(global.priv_error("Error loading guild configuration"))?
         .into_iter()
         .map(|guild| {

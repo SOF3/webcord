@@ -35,6 +35,10 @@ where
                     }
                 }
             }
+            div(class = "container section") {
+                p: "Want to add more guilds?";
+                a(href = "/invite", class = "btn waves-effect indigo accent-1"): "Invite bot"
+            }
         },
     )
 }
