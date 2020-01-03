@@ -12,10 +12,8 @@ pub fn render<'t>(
         global,
         page,
         html! {
-            main {
-                div(class = "container section") {
-                    : "This will specify information about a guild"
-                }
+            div(class = "container section") {
+                : "This will specify information about a guild"
             }
         },
     )

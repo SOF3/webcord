@@ -16,17 +16,18 @@ where
         global,
         page,
         html! {
-            main {
-                div(class = "container section") {
-                    div(class = "row") {
-                        div(class = "col s12 m6"): "Guilds mirrored by webcord";
-                        : pages(local.current_page, local.total_pages);
+            div(class = "container section") {
+                div(class = "row") {
+                    div(class = "col s12 m6"): "Guilds mirrored by webcord";
+                    div(class = "col s1") {
+                        label: "Page";
                     }
-                    div(class = "row") {
-                        @ for guild in local.guilds {
-                            div(class = "truncate col s12 m3") {
-                                a(href = format_args!("/guilds/{}", guild.id)): guild.name;
-                            }
+                    div(class = "col s11 m5"): pages(local.current_page, local.total_pages);
+                }
+                div(class = "row") {
+                    @ for guild in local.guilds {
+                        div(class = "truncate col s12 m3") {
+                            a(href = format_args!("/guilds/{}", guild.id)): guild.name;
                         }
                     }
                 }
@@ -37,14 +38,12 @@ where
 
 fn pages(current: usize, n: usize) -> impl Render {
     html! {
-        div(class = "col s12 m6 input-field") {
-            select(name = "guilds-select-page", id = "guilds-select-page") {
-                @ for i in 1..=n {
-                    option(value = format_args!("{}", i), selected ?= (i == current)):
-                        format_args!("Page {} of {}", i, n);
+        ul(class = "pagiation") {
+            @ for i in 1..=n {
+                li(class = if i == current { "active" } else { "waves-effect" }) {
+                    a(href = format_args!("/guilds?page={}", i)): format_args!("{}", i);
                 }
             }
-            label: "Select page:";
         }
     }
 }

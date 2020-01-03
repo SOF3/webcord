@@ -15,16 +15,14 @@ where
         global,
         page,
         html! {
-            main {
-                div(class = "container section") {
-                    div(class = "collection") {
-                        @ for guild in local.guilds {
-                            a(href = format_args!("/account/{}", guild.id), class = "collection-item avatar") {
-                                @ if let Some(icon) = guild.icon {
-                                    img(class = "circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
-                                }
-                                span(class = "title"): guild.name;
+            div(class = "container section") {
+                div(class = "collection") {
+                    @ for guild in local.guilds {
+                        a(href = format_args!("/account/{}", guild.id), class = "collection-item avatar") {
+                            @ if let Some(icon) = guild.icon {
+                                img(class = "circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
                             }
+                            span(class = "title"): guild.name;
                         }
                     }
                 }

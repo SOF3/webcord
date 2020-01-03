@@ -34,7 +34,7 @@ pub fn layout_impl<'t>(
 
             body {
                 : nav(global, &page, minimal);
-                : main_block;
+                main: main_block;
                 : foot(global, &page);
             }
         }

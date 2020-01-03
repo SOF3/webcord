@@ -17,11 +17,9 @@ pub fn render<'t>(
         global,
         page,
         html! {
-            main {
-                div(class = "container section") {
-                    h3: page.title;
-                    p(class = "light"): local.message;
-                }
+            div(class = "container section") {
+                h3: page.title;
+                p(class = "light"): local.message;
             }
         },
     )
