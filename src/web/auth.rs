@@ -102,7 +102,7 @@ pub(super) async fn login(
         });
     }
 
-    Ok(super::redirect(format!("/account/{}", args.guild_id))) // TODO redirect to /account/{guild}
+    Ok(super::redirect(format!("/account#guild-{}", args.guild_id)))
 }
 
 #[derive(Deserialize)]

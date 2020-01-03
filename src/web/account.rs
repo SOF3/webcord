@@ -1,5 +1,9 @@
+use std::collections::HashMap;
+
 use actix_web::{web, HttpResponse};
 
+use crate::GuildId;
+use crate::index::Index;
 use super::{html, UserResult};
 
 #[actix_web::get("/account")]
@@ -7,6 +11,7 @@ pub(super) async fn handler(
     login: super::Login,
     global: web::Data<html::GlobalArgs>,
     common_client: web::Data<reqwest::Client>,
+    index: web::Data<Index>,
 ) -> UserResult<HttpResponse> {
     let login = match &*login {
         Some(login) => login,
@@ -31,15 +36,24 @@ pub(super) async fn handler(
         .await
         .map_err(global.priv_error("Error loading guild list"))?;
 
-    let mut useful = guilds
+    let with_admin = guilds
         .iter()
         .filter(|guild| guild.permissions & 8 == 8)
-        .map(|guild| html::account::GuildEntry {
-            id: guild.id.parse::<u64>().unwrap_or(0) as crate::model::GuildId, // ignored error
-            name: &guild.name,
-            icon: guild.icon.as_ref().map(|s| s.as_str()),
+        .map(|guild| (guild.id.parse::<u64>().unwrap_or(0) as GuildId, guild))
+        .collect::<HashMap<_,_>>();
+
+    let mut enabled = index.filter_enabled(with_admin.keys().copied())
+        .map_err(global.priv_error("Error loading guild configuration"))?
+        .into_iter()
+        .map(|guild| {
+            let object = &with_admin[&guild.guild_id];
+            html::account::GuildEntry {
+                id: guild.guild_id, // ignored error
+                name: &object.name,
+                icon: object.icon.as_ref().map(|s| s.as_str()),
+                listed: guild.listed,
+            }
         });
-    // TODO filter out guilds without bot
 
     let rendered = html::account::render(html::Args {
         global: global.as_ref(),
@@ -49,7 +63,7 @@ pub(super) async fn handler(
             login: Some(&login.disp),
         },
         local: html::account::Local {
-            guilds: &mut useful,
+            guilds: &mut enabled,
         },
     })?;
     Ok(HttpResponse::Ok().body(rendered))

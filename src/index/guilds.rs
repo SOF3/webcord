@@ -15,4 +15,20 @@ impl Index {
             .map(|guild| (guild.id(), guild.into_name()))
             .collect())
     }
+
+    pub fn filter_enabled(&self, list: impl IntoIterator<Item = GuildId>) -> Result<Vec<FilterResult>, QueryError> {
+        let guilds = guilds::guilds
+            .select((guilds::id, guilds::listed))
+            .filter(guilds::id.eq_any(list))
+            .load::<(GuildId, bool)>(&self.0.get()?)?;
+        Ok(guilds
+            .into_iter()
+            .map(|(guild_id, listed)| FilterResult { guild_id, listed })
+            .collect())
+    }
+}
+
+pub struct FilterResult {
+    pub guild_id: GuildId,
+    pub listed: bool,
 }

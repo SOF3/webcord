@@ -16,13 +16,21 @@ where
         page,
         html! {
             div(class = "container section") {
-                div(class = "collection") {
+                ul(class = "collection") {
                     @ for guild in local.guilds {
-                        a(href = format_args!("/account/{}", guild.id), class = "collection-item avatar") {
+                        li(class = "collection-item avatar") {
                             @ if let Some(icon) = guild.icon {
-                                img(class = "circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
+                                img(class = "responsive-img circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
                             }
-                            span(class = "title"): guild.name;
+                            span(class = "title") {
+                                a(name = format_args!("guild-{}", guild.id), href = format_args!("#guild-{}", guild.id)): guild.name;
+                            }
+                            p {
+                                label {
+                                    input(type = "checkbox", class = "filled-in", checked ?= guild.listed);
+                                    span: "Listed";
+                                }
+                            }
                         }
                     }
                 }
@@ -42,4 +50,5 @@ pub struct GuildEntry<'t> {
     pub id: GuildId,
     pub name: &'t str,
     pub icon: Option<&'t str>,
+    pub listed: bool,
 }

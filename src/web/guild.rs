@@ -8,9 +8,10 @@ pub(super) async fn handler(
     login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
-    path: web::Path<(GuildId,)>,
+    path: web::Path<(u64,)>,
 ) -> UserResult<HttpResponse> {
     let (guild_id,) = path.into_inner();
+    let guild_id = guild_id as GuildId;
     let guild = block(move || bridge.guild_info(guild_id, false))
         .await
         .map_err(global.priv_error("Error querying Discord API"))?;
