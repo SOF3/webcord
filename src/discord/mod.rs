@@ -8,7 +8,6 @@ use serenity::model::prelude::{self as model, Message};
 use serenity::prelude::*;
 
 use crate::index::Index;
-use crate::GuildId;
 use crate::Secrets;
 
 pub struct Bridge {
@@ -18,7 +17,7 @@ pub struct Bridge {
 
 impl Bridge {
     pub fn try_new(secrets: &Secrets, index: &Index) -> serenity::Result<Self> {
-        let mut client = serenity::Client::new(secrets.discord().token(), Handler)?;
+        let mut client = serenity::Client::new(secrets.discord().token(), handler::Handler)?;
         {
             let mut data = client.data.write();
             data.insert::<SecretsKey>(secrets.clone());
@@ -71,37 +70,6 @@ fn help(ctx: &mut Context, msg: &Message) -> CommandResult {
     msg.reply(ctx, reply)?;
 
     Ok(())
-}
-
-struct Handler;
-
-impl EventHandler for Handler {
-    fn ready(&self, ctx: Context, data: model::Ready) {
-        let tymap = ctx.data.read();
-        let secrets = tymap.get::<SecretsKey>().unwrap();
-        log::info!("Live on {} guilds", data.guilds.len());
-        ctx.set_presence(
-            Some(model::Activity::streaming(
-                &format!("chat log on {}", secrets.web().domain()),
-                secrets.web().domain(),
-            )),
-            model::OnlineStatus::Online,
-        );
-    }
-
-    fn guild_create(&self, ctx: Context, guild: model::Guild, is_new: bool) {
-        if !is_new {
-            return;
-        }
-
-        log::info!("Joined guild {} in {}", &guild.name, &guild.region);
-
-        let tymap = ctx.data.read();
-        let index = tymap.get::<IndexKey>().unwrap();
-        if let Err(err) = index.new_join(*guild.id.as_u64() as GuildId, &guild.name) {
-            log::error!("Error registering new guild: {}", err);
-        }
-    }
 }
 
 struct SecretsKey;

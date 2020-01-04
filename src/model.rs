@@ -23,7 +23,7 @@ impl Hash for GuildInfo {
     }
 }
 
-#[derive(Serialize, CopyGetters, Getters, new)]
+#[derive(Debug, Serialize, CopyGetters, Getters, new)]
 pub struct ChannelInfo {
     #[get_copy = "pub"]
     id: ChannelId,

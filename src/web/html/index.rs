@@ -1,15 +1,9 @@
-use super::{html, lib, Args, Output};
+use super::{html, lib, GlobalArgs, Output, PageArgs, PageConfig};
 
-pub fn render<'t>(
-    Args {
-        global,
-        page,
-        local: _,
-    }: Args<'t, ()>,
-) -> Output {
+pub fn render<'t, C: PageConfig>(global: &'t GlobalArgs, page: PageArgs<'t, C>) -> Output {
     lib::layout(
         global,
-        page,
+        &page,
         html! {
             div(class = "section no-pad-bot") {
                 div(class = "container") {

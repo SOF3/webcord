@@ -35,6 +35,23 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
         ),
     });
 
+    async fn error404(global: web::Data<html::GlobalArgs>) -> UserResult<HttpResponse> {
+        let rendered = html::error::render(
+            global.as_ref(),
+            html::PageArgs {
+                config: (),
+                title: "Not Found",
+                description: "404 Not Found",
+                login: None,
+            },
+            html::error::Local {
+                message:
+                    "This route does not exist. Perhaps there would be something here one day?",
+            },
+        )?;
+        Ok(HttpResponse::NotFound().body(rendered))
+    }
+
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .app_data(secrets_data.clone())
@@ -55,13 +72,11 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             .service(guild::handler)
             .service(guilds::handler)
             .default_service(
-                web::resource("")
-                    .route(web::get().to(index::error404))
-                    .route(
-                        web::route()
-                            .guard(guard::Not(guard::Get()))
-                            .to(HttpResponse::MethodNotAllowed),
-                    ),
+                web::resource("").route(web::get().to(error404)).route(
+                    web::route()
+                        .guard(guard::Not(guard::Get()))
+                        .to(HttpResponse::MethodNotAllowed),
+                ),
             )
     })
     .bind(secrets.web().addr())?

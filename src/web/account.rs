@@ -31,41 +31,79 @@ pub(super) async fn handler(
         .bearer_auth(&login.token)
         .send()
         .await
-        .map_err(global.priv_error("Error loading guild list"))?
+        .map_err(global.priv_error("Error loading guild information from Discord"))?
         .json::<Vec<PartialGuild>>()
         .await
-        .map_err(global.priv_error("Error loading guild list"))?;
+        .map_err(global.priv_error("Error loading guild information from Discord"))?;
 
     let with_admin = guilds
         .iter()
         .filter(|guild| guild.permissions & 8 == 8)
-        .map(|guild| (guild.id.parse::<u64>().unwrap_or(0) as GuildId, guild))
-        .collect::<HashMap<_, _>>();
+        .map(|guild| Ok((guild.id.parse::<u64>()? as GuildId, guild)))
+        .collect::<Result<HashMap<_, _>, std::num::ParseIntError>>()
+        .map_err(global.priv_error("Error loading guild information from Discord"))?;
 
-    let mut enabled = index
+    let enabled = index
         .filter_enabled(with_admin.keys().copied())
         .map_err(global.priv_error("Error loading guild configuration"))?
         .into_iter()
         .map(|guild| {
             let object = &with_admin[&guild.guild_id];
             html::account::GuildEntry {
-                id: guild.guild_id, // ignored error
+                id: guild.guild_id,
                 name: &object.name,
                 icon: object.icon.as_ref().map(|s| s.as_str()),
                 listed: guild.listed,
             }
-        });
+        })
+        .collect::<Vec<_>>();
 
-    let rendered = html::account::render(html::Args {
-        global: global.as_ref(),
-        page: html::PageArgs {
+    let rendered = html::account::render(
+        global.as_ref(),
+        html::PageArgs {
+            config: client::PageConfig {
+                guilds: serde_iter::CloneOnce::from(enabled.iter().map(|guild| {
+                    client::GuildEntry {
+                        id: guild.id as u64,
+                        listed: guild.listed,
+                    }
+                })),
+            },
             title: "Manage account",
             description: "Manage guilds under your account",
             login: Some(&login.disp),
         },
-        local: html::account::Local {
-            guilds: &mut enabled,
+        html::account::Local {
+            guilds: &mut enabled.iter(),
         },
-    })?;
+    )?;
     Ok(HttpResponse::Ok().body(rendered))
+}
+
+mod client {
+    #[derive(serde::Serialize)]
+    pub(super) struct PageConfig<I: Iterator<Item = GuildEntry> + Clone> {
+        #[serde(with = "serde_iter::seq")]
+        pub(super) guilds: I,
+    }
+
+    #[derive(serde::Serialize)]
+    pub(super) struct GuildEntry {
+        #[serde(serialize_with = "u64_to_string")]
+        pub(super) id: u64,
+        pub(super) listed: bool,
+    }
+
+    fn u64_to_string<S: serde::Serializer>(v: &u64, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(&v.to_string())
+    }
+
+    impl<'t, I> crate::web::html::PageConfig for PageConfig<I>
+    where
+        I: Iterator<Item = GuildEntry> + Clone,
+    {
+        fn page_type() -> &'static str {
+            "account"
+        }
+    }
 }

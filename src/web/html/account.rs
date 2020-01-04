@@ -1,26 +1,27 @@
-use super::{html, lib, Args, Output};
+use super::{html, lib, GlobalArgs, Output, PageArgs, PageConfig};
 use crate::model::GuildId;
 
-pub fn render<'t, I>(
-    Args {
-        global,
-        page,
-        local,
-    }: Args<'t, Local<'t, I>>,
+pub fn render<'t, C, I>(
+    global: &'t GlobalArgs,
+    page: PageArgs<'t, C>,
+    local: Local<'t, I>,
 ) -> Output
 where
-    I: Iterator<Item = GuildEntry<'t>>,
+    C: PageConfig,
+    I: Iterator<Item = &'t GuildEntry<'t>>,
 {
     lib::layout(
         global,
-        page,
+        &page,
         html! {
             div(class = "container section") {
                 ul(class = "collection") {
                     @ for guild in local.guilds {
                         li(class = "collection-item avatar") {
                             @ if let Some(icon) = guild.icon {
-                                img(class = "responsive-img circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
+                                a(name = format_args!("guild-{}", guild.id), href = format_args!("#guild-{}", guild.id)) {
+                                    img(class = "responsive-img circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
+                                }
                             }
                             span(class = "title") {
                                 a(name = format_args!("guild-{}", guild.id), href = format_args!("#guild-{}", guild.id)): guild.name;
@@ -45,7 +46,7 @@ where
 
 pub struct Local<'t, I>
 where
-    I: Iterator<Item = GuildEntry<'t>>,
+    I: Iterator<Item = &'t GuildEntry<'t>>,
 {
     pub guilds: &'t mut I,
 }

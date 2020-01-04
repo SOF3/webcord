@@ -1,24 +1,26 @@
-use super::{html, Critical, GlobalArgs, Output, PageArgs, Render, RenderOnce};
+use horrorshow::Raw;
 
-pub fn minimal_layout<'t>(
+use super::{html, Critical, GlobalArgs, Output, PageArgs, PageConfig, Render, RenderOnce};
+
+pub fn minimal_layout<'t, C: PageConfig>(
     global: &'t GlobalArgs,
-    page: PageArgs<'t>,
+    page: &'t PageArgs<'t, C>,
     main_block: impl RenderOnce + 't,
 ) -> Output {
     layout_impl(global, page, main_block, true)
 }
 
-pub fn layout<'t>(
+pub fn layout<'t, C: PageConfig>(
     global: &'t GlobalArgs,
-    page: PageArgs<'t>,
+    page: &'t PageArgs<'t, C>,
     main_block: impl RenderOnce + 't,
 ) -> Output {
     layout_impl(global, page, main_block, false)
 }
 
-pub fn layout_impl<'t>(
+pub fn layout_impl<'t, C: PageConfig>(
     global: &'t GlobalArgs,
-    page: PageArgs<'t>,
+    page: &'t PageArgs<'t, C>,
     main_block: impl RenderOnce + 't,
     minimal: bool,
 ) -> Output {
@@ -45,7 +47,7 @@ pub fn layout_impl<'t>(
     })
 }
 
-fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't {
+fn head<'t, C: PageConfig>(global: &'t GlobalArgs, page: &'t PageArgs<'t, C>) -> impl Render + 't {
     html! {
         title: page.title;
         meta(charset = "UTF-8");
@@ -67,10 +69,18 @@ fn head<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>) -> impl Render + 't 
         link(type = "image/x-icon", rel = "icon", href = "/favicon.ico");
         meta(name = "mobile-web-app-capable", content = "yes");
         link(rel = "stylesheet", href = format_args!("/style.css?{}", &global.runtime_id));
+        script {
+            : Raw("var WEBCORD_CILIENT_CONFIG = ");
+            : Raw(serde_json::to_string(C::page_type()).expect("Failed to serialize PageConfig"));
+        }
     }
 }
 
-fn nav<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> impl Render + 't {
+fn nav<'t, C: PageConfig>(
+    global: &'t GlobalArgs,
+    page: &'t PageArgs<'t, C>,
+    minimal: bool,
+) -> impl Render + 't {
     html! {
         nav(role = "navigation", class = "light-green darken-4") {
             div(class = "nav-wrapper") {
@@ -85,9 +95,9 @@ fn nav<'t>(global: &'t GlobalArgs, page: &'t PageArgs<'t>, minimal: bool) -> imp
     }
 }
 
-fn side_nav<'t>(
+fn side_nav<'t, C: PageConfig>(
     _global: &'t GlobalArgs,
-    page: &'t PageArgs<'t>,
+    page: &'t PageArgs<'t, C>,
     minimal: bool,
 ) -> impl Render + 't {
     html! {
@@ -101,13 +111,13 @@ fn side_nav<'t>(
             @ if let Some(_login) = page.login {
                 li {
                     a(href = "/account") {
-                        : icon("account_circle");
+                        center: icon("account_circle");
                         : "Manage";
                     }
                 }
                 li {
                     a(href = "/logout") {
-                        : icon("power_settings_new");
+                        center: icon("power_settings_new");
                         : "Logout";
                     }
                     // TODO: Find a place to put : format_args!("{}#{}", &login.username, &login.discrim)
@@ -115,7 +125,7 @@ fn side_nav<'t>(
             } else {
                 li {
                     a(href = "/invite") {
-                        : icon("add");
+                        center: icon("add");
                         : "Manage/Invite";
                     }
                 }
@@ -124,7 +134,7 @@ fn side_nav<'t>(
     }
 }
 
-fn foot<'t>(global: &'t GlobalArgs, _page: &'t PageArgs<'t>) -> impl Render + 't {
+fn foot<'t, C: PageConfig>(global: &'t GlobalArgs, _page: &'t PageArgs<'t, C>) -> impl Render + 't {
     html! {
         footer(class = "page-footer light-green darken-4") {
             div(class = "container") {

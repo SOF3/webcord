@@ -1,20 +1,19 @@
-use super::{html, lib, Args, Output};
+use super::{html, lib, GlobalArgs, Output, PageArgs, PageConfig};
 use crate::GuildId;
 use horrorshow::Render;
 
-pub fn render<'t, I>(
-    Args {
-        global,
-        page,
-        local,
-    }: Args<'t, Local<'t, I>>,
+pub fn render<'t, C, I>(
+    global: &'t GlobalArgs,
+    page: PageArgs<'t, C>,
+    local: Local<'t, I>,
 ) -> Output
 where
+    C: PageConfig,
     I: Iterator<Item = GuildEntry<'t>>,
 {
     lib::layout(
         global,
-        page,
+        &page,
         html! {
             div(class = "container section") {
                 div(class = "row") {
