@@ -15,7 +15,11 @@ pub(super) async fn handler(
         .await
         .map_err(global.priv_error_code(404, "Guild does not exist"))?;
     if guild.channels().len() > 0 {
-        Ok(super::redirect(format!("/guilds/{}/{}", guild_id, guild.channels()[0].name())))
+        Ok(super::redirect(format!(
+            "/guilds/{}/{}",
+            guild_id,
+            guild.channels()[0].name()
+        )))
     } else {
         unimplemented!("Display error page about this guild having no visible channels")
     }

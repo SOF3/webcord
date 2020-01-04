@@ -1,8 +1,8 @@
-use serenity::model::prelude::{self as model, };
+use serenity::model::prelude::{self as model};
 use serenity::prelude::*;
 
-use crate::GuildId;
 use super::{IndexKey, SecretsKey};
+use crate::GuildId;
 
 pub(super) struct Handler;
 
