@@ -17,6 +17,7 @@ actix-rt = "1.0.0-alpha.3" # selected by actix-web
 actix-session = "0.3.0"
 actix-threadpool = "0.3.1"
 actix-web = "2.0.0"
+chrono = "0.4.10"
 config = "0.10.1"
 derive-new = "0.5.8"
 derive_more = "0.99.2"
@@ -34,7 +35,7 @@ percent-encoding = "2.1.0"
 pretty_env_logger = "0.3.1"
 r2d2 = "0.8.8"
 rand = "0.7.2"
-reqwest = {version = "0.10.0", features = ["gzip", "json"]}
+reqwest = {version = "0.10.0", features = ["gzip", "json", "blocking"]}
 ring = "0.16.9"
 serde = {version = "1.0.104", features = ["std", "derive"]}
 serde_iter = "0.1.1"

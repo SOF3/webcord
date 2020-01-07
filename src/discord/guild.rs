@@ -23,6 +23,19 @@ impl super::Bridge {
             })
             .collect();
         let gi = GuildInfo::new(guild.id.into(), guild.name, channels);
+
+        // TODO store to index
+
         Ok(gi)
     }
+
+    pub fn fetch_messages(
+        &self,
+        channel: &ChannelInfo,
+        date: chrono::NaiveDate,
+    ) -> super::Result<Vec<Message>> {
+        unimplemented!()
+    }
 }
+
+pub struct Message {}

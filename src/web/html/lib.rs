@@ -1,13 +1,13 @@
 use horrorshow::Raw;
 
-use super::{html, Critical, GlobalArgs, Output, PageArgs, PageConfig, Render, RenderOnce};
+use super::{html, Critical, GlobalArgs, Output, PageArgs, PageConfig, RenderOnce};
 
 pub fn minimal_layout<'t, C: PageConfig>(
     global: &'t GlobalArgs,
     page: &'t PageArgs<'t, C>,
     main_block: impl RenderOnce + 't,
 ) -> Output {
-    layout_impl(global, page, main_block, true)
+    layout_impl(global, page, html!(), html!(), main_block, true)
 }
 
 pub fn layout<'t, C: PageConfig>(
@@ -15,12 +15,24 @@ pub fn layout<'t, C: PageConfig>(
     page: &'t PageArgs<'t, C>,
     main_block: impl RenderOnce + 't,
 ) -> Output {
-    layout_impl(global, page, main_block, false)
+    layout_impl(global, page, html!(), html!(), main_block, false)
+}
+
+pub fn full_layout<'t, C: PageConfig>(
+    global: &'t GlobalArgs,
+    page: &'t PageArgs<'t, C>,
+    head_tail: impl RenderOnce + 't,
+    nav_block: impl RenderOnce + 't,
+    main_block: impl RenderOnce + 't,
+) -> Output {
+    layout_impl(global, page, head_tail, nav_block, main_block, false)
 }
 
 pub fn layout_impl<'t, C: PageConfig>(
     global: &'t GlobalArgs,
     page: &'t PageArgs<'t, C>,
+    head_tail: impl RenderOnce + 't,
+    nav_block: impl RenderOnce + 't,
     main_block: impl RenderOnce + 't,
     minimal: bool,
 ) -> Output {
@@ -32,10 +44,11 @@ pub fn layout_impl<'t, C: PageConfig>(
         html(lang = "en") {
             head {
                 : head(global, &page);
+                : head_tail;
             }
 
             body {
-                : nav(global, &page, minimal);
+                : nav(global, &page, nav_block, minimal);
                 main: main_block;
                 : foot(global, &page);
             }
@@ -47,7 +60,10 @@ pub fn layout_impl<'t, C: PageConfig>(
     })
 }
 
-fn head<'t, C: PageConfig>(global: &'t GlobalArgs, page: &'t PageArgs<'t, C>) -> impl Render + 't {
+fn head<'t, C: PageConfig>(
+    global: &'t GlobalArgs,
+    page: &'t PageArgs<'t, C>,
+) -> impl RenderOnce + 't {
     html! {
         title: page.title;
         meta(charset = "UTF-8");
@@ -79,8 +95,9 @@ fn head<'t, C: PageConfig>(global: &'t GlobalArgs, page: &'t PageArgs<'t, C>) ->
 fn nav<'t, C: PageConfig>(
     global: &'t GlobalArgs,
     page: &'t PageArgs<'t, C>,
+    nav_block: impl RenderOnce + 't,
     minimal: bool,
-) -> impl Render + 't {
+) -> impl RenderOnce + 't {
     html! {
         nav(role = "navigation", class = "light-green darken-4") {
             div(class = "nav-wrapper") {
@@ -91,6 +108,7 @@ fn nav<'t, C: PageConfig>(
                 a(href = "#", data-target = "mobile-menu", class = "sidenav-trigger") : icon("menu");
                 ul(class = "sidenav", id = "mobile-menu"): side_nav(global, page, minimal);
             }
+            : nav_block;
         }
     }
 }
@@ -99,7 +117,7 @@ fn side_nav<'t, C: PageConfig>(
     _global: &'t GlobalArgs,
     page: &'t PageArgs<'t, C>,
     minimal: bool,
-) -> impl Render + 't {
+) -> impl RenderOnce + 't {
     html! {
         li {
             a(href = "/guilds") {
@@ -134,7 +152,10 @@ fn side_nav<'t, C: PageConfig>(
     }
 }
 
-fn foot<'t, C: PageConfig>(global: &'t GlobalArgs, _page: &'t PageArgs<'t, C>) -> impl Render + 't {
+fn foot<'t, C: PageConfig>(
+    global: &'t GlobalArgs,
+    _page: &'t PageArgs<'t, C>,
+) -> impl RenderOnce + 't {
     html! {
         footer(class = "page-footer light-green darken-4") {
             div(class = "container") {
@@ -163,7 +184,7 @@ fn foot<'t, C: PageConfig>(global: &'t GlobalArgs, _page: &'t PageArgs<'t, C>) -
     }
 }
 
-fn icon(name: &'static str) -> impl Render {
+pub fn icon(name: &'static str) -> impl RenderOnce {
     html! {
         i(class = "material-icons"): name;
     }

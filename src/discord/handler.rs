@@ -35,4 +35,6 @@ impl EventHandler for Handler {
 
         // TODO store channels
     }
+
+    // TODO store new channels
 }

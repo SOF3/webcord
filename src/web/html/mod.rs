@@ -1,4 +1,4 @@
-use horrorshow::{owned_html as html, Render, RenderOnce};
+use horrorshow::{owned_html as html, RenderOnce};
 
 use super::Critical;
 

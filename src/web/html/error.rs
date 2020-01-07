@@ -37,7 +37,7 @@ impl GlobalArgs {
     {
         let message = message.to_string();
         let code = code.try_into().expect("Invalid status code");
-        let body = super::error::render(
+        let body = render(
             &self,
             PageArgs {
                 config: (),

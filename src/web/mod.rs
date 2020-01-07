@@ -69,7 +69,9 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             .service(auth::login)
             .service(auth::logout)
             .service(account::handler)
-            .service(guild::handler)
+            .service(channel::handle_guild)
+            .service(channel::handle_channel)
+            .service(channel::handle_date)
             .service(guilds::handler)
             .default_service(
                 web::resource("").route(web::get().to(error404)).route(
