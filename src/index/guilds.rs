@@ -8,11 +8,11 @@ use crate::GuildId;
 impl Index {
     pub fn list_guilds(&self) -> Result<Vec<(GuildId, String)>, QueryError> {
         let guilds = guilds::guilds
+            .select((guilds::id, guilds::cache_name))
             .filter(guilds::listed.eq(true))
-            .load::<models::Guild>(&self.0.get()?)?;
+            .load(&self.0.get()?)?;
         Ok(guilds
             .into_iter()
-            .map(|guild| (guild.id(), guild.into_name()))
             .collect())
     }
 

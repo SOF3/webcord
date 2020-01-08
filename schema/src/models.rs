@@ -44,12 +44,6 @@ pub struct Guild {
     listed: bool,
 }
 
-impl Guild {
-    pub fn into_name(self) -> String {
-        self.cache_name
-    }
-}
-
 #[derive(Associations, Identifiable, Queryable, Getters, CopyGetters)]
 #[belongs_to(Guild)]
 #[primary_key(code)]
@@ -60,34 +54,9 @@ pub struct KnownInvite {
     guild_id: GuildId,
 }
 
-#[allow(unused_macros)] // TODO fix impl problems and switch to newtype
 macro_rules! snowflake {
-    ($($name:ident)*) => {$(
-        #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize)]
-        pub struct $name(pub u64);
-
-        impl AsExpression<BigInt> for $name {
-            type Expression = <i64 as AsExpression<BigInt>>::Expression;
-
-            fn as_expression(self) -> Self::Expression {
-                AsExpression::<BigInt>::as_expression(self.0 as i64)
-            }
-        }
-
-        impl<ST, DB: diesel::backend::Backend> Queryable<ST, DB> for $name
-        where i64: FromSql<ST, DB> {
-            type Row = <i64 as Queryable<ST, DB>>::Row;
-
-            fn build(row: Self::Row) -> Self {
-                let inner = <i64 as Queryable<ST, DB>>::build(row);
-                Self(inner as u64)
-            }
-        }
-    )*};
-}
-macro_rules! snowflake2 {
     ($($name:ident)*) => {$(
         pub type $name = i64;
     )*};
 }
-snowflake2!(GuildId ChannelId MessageId);
+snowflake!(GuildId ChannelId MessageId);
