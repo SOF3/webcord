@@ -1,4 +1,4 @@
-dirmod::all!();
+dirmod::all!(default pub use; default dir pub);
 
 use derive_more::{Display, From};
 use diesel::pg::PgConnection;

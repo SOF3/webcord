@@ -5,14 +5,15 @@ use std::sync::Arc;
 use actix_web::{web, HttpResponse};
 
 use super::{html, UserResult};
-use crate::{block, discord, ChannelInfo, GuildId, GuildInfo};
+use crate::index::{ChannelInfo, GuildInfo};
+use crate::{block, discord, GuildId};
 
 #[actix_web::get("/guilds/{guild}")]
 pub(super) async fn handle_guild(
     login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
-    path: web::Path<(u64,)>,
+    path: web::Path<(GuildId,)>,
 ) -> UserResult<HttpResponse> {
     let (guild_id,) = path.into_inner();
     handler(login, bridge, global, guild_id, None, None).await
@@ -23,7 +24,7 @@ pub(super) async fn handle_channel(
     login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
-    path: web::Path<(u64, String)>,
+    path: web::Path<(GuildId, String)>,
 ) -> UserResult<HttpResponse> {
     let (guild_id, channel_name) = path.into_inner();
     handler(login, bridge, global, guild_id, Some(channel_name), None).await
@@ -34,7 +35,7 @@ pub(super) async fn handle_date(
     login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
-    path: web::Path<(u64, String, u32, u32, u32)>,
+    path: web::Path<(GuildId, String, u32, u32, u32)>,
 ) -> UserResult<HttpResponse> {
     let (guild_id, channel_name, year, month, date) = path.into_inner();
     handler(
@@ -48,15 +49,15 @@ pub(super) async fn handle_date(
     .await
 }
 
+#[allow(unreachable_code)]
 async fn handler(
     login: super::Login,
     bridge: web::Data<discord::Bridge>,
     global: web::Data<html::GlobalArgs>,
-    guild_id: u64,
+    guild_id: GuildId,
     channel_name: Option<String>,
     ymd: Option<(u32, u32, u32)>,
 ) -> UserResult<HttpResponse> {
-    let guild_id = guild_id as GuildId;
     let guild = {
         let bridge = Arc::clone(&bridge);
         block(move || bridge.guild_info(guild_id, true))
@@ -96,21 +97,30 @@ async fn handler(
         .await
         .map_err(global.priv_error("Failed to fetch message history"))?;
 
-    let rendered: String = /*html::channel::render(&global, html::PageArgs {
+    let groups: Vec<html::channel::Group<'_, &[_]>> = unimplemented!();
+    let current_group = &groups[0]; // TODO unimplemented
+    let messages = messages.into_iter().map(|message| html::channel::Message {
+        time: unimplemented!(),
+        author: unimplemented!(),
+        content: horrorshow::html!(), // TODO unimplemented
+        reactions: std::iter::once(unimplemented!()),
+    });
+
+    let rendered: String = html::channel::render(&global, html::PageArgs {
         config: client::PageConfig,
         title: &format!("#{} | {} ({})", &channel.name(), guild.name(), date.format("%Y-%m-%d")),
         description: &format!("Message history on #{} of {} on {}. Open webcord on your browser to see a live mirror.", &channel.name(), guild.name(), date.format("%Y-%m-%d")),
         login: login.as_ref().map(|login| &login.disp),
     }, html::channel::Guild {
-        id: guild.id() as u64,
+        id: guild.id(),
         name: guild.name(),
     },
-        unimplemented!("channel groups"),
-        unimplemented!("current_category"),
+        &groups,
+        current_group,
         unimplemented!("current_channel"),
         date,
-        unimplemented!("messages"),
-    )?;*/ unimplemented!();
+        messages,
+    )?;
     Ok(HttpResponse::Ok().body(rendered))
 }
 

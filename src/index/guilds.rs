@@ -10,9 +10,10 @@ impl Index {
         let guilds = guilds::guilds
             .select((guilds::id, guilds::cache_name))
             .filter(guilds::listed.eq(true))
-            .load(&self.0.get()?)?;
+            .load::<(i64, String)>(&self.0.get()?)?;
         Ok(guilds
             .into_iter()
+            .map(|(guild_id, name)| (guild_id.into(), name))
             .collect())
     }
 
@@ -22,17 +23,20 @@ impl Index {
     ) -> Result<Vec<FilterResult>, QueryError> {
         let guilds = guilds::guilds
             .select((guilds::id, guilds::listed))
-            .filter(guilds::id.eq_any(list))
-            .load::<(GuildId, bool)>(&self.0.get()?)?;
+            .filter(guilds::id.eq_any(list.into_iter().map(|id| id.to_db())))
+            .load::<(i64, bool)>(&self.0.get()?)?;
         Ok(guilds
             .into_iter()
-            .map(|(guild_id, listed)| FilterResult { guild_id, listed })
+            .map(|(guild_id, listed)| FilterResult {
+                guild_id: guild_id.into(),
+                listed,
+            })
             .collect())
     }
 
     pub fn new_join(&self, id: GuildId, name: &str) -> Result<(), QueryError> {
         diesel::insert_into(guilds::guilds)
-            .values(&[models::Guild::new(id, name.to_string(), false)][..])
+            .values(&[models::Guild::new(id.to_db(), name.to_string(), false)][..])
             .execute(&self.0.get()?)?;
         Ok(())
     }

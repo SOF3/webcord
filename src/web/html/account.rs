@@ -1,5 +1,5 @@
 use super::{html, lib, GlobalArgs, Output, PageArgs, PageConfig};
-use crate::model::GuildId;
+use crate::GuildId;
 
 pub fn render<'t, C, I>(
     global: &'t GlobalArgs,
@@ -20,7 +20,7 @@ where
                         li(class = "collection-item avatar") {
                             @ if let Some(icon) = guild.icon {
                                 a(name = format_args!("guild-{}", guild.id), href = format_args!("#guild-{}", guild.id)) {
-                                    img(class = "responsive-img circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id as u64, icon));
+                                    img(class = "responsive-img circle", src = format_args!("https://cdn.discordapp.com/icons/{}/{}", guild.id, icon));
                                 }
                             }
                             span(class = "title") {

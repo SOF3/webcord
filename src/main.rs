@@ -6,6 +6,10 @@ use std::error::Error;
 use std::fmt::Display;
 use std::io;
 
+macro_rules! noop {
+    ($($tt:tt)*) => {};
+}
+
 dirmod::all!();
 
 fn ctx<D: Display, E: Error>(context: D) -> impl Fn(E) -> io::Error {

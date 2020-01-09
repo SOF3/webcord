@@ -29,7 +29,7 @@ impl EventHandler for Handler {
 
         let tymap = ctx.data.read();
         let index = tymap.get::<IndexKey>().unwrap();
-        if let Err(err) = index.new_join(*guild.id.as_u64() as GuildId, &guild.name) {
+        if let Err(err) = index.new_join(GuildId::from(guild.id), &guild.name) {
             log::error!("Error registering new guild: {}", err);
         }
 

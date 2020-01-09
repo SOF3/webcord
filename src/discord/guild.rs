@@ -1,6 +1,7 @@
 use serenity::model::prelude as smodel;
 
-use crate::{ChannelInfo, GuildId, GuildInfo};
+use crate::index::{ChannelInfo, GuildInfo};
+use crate::GuildId;
 
 impl super::Bridge {
     pub fn guild_info(&self, guild_id: GuildId, refresh: bool) -> super::Result<GuildInfo> {
@@ -10,7 +11,7 @@ impl super::Bridge {
             }
         }
 
-        let guild = smodel::Guild::get(self.http(), guild_id as u64)?;
+        let guild = smodel::Guild::get(self.http(), guild_id)?;
         let channels = guild
             .channels(self.http())?
             .into_iter()
@@ -31,8 +32,8 @@ impl super::Bridge {
 
     pub fn fetch_messages(
         &self,
-        channel: &ChannelInfo,
-        date: chrono::NaiveDate,
+        _channel: &ChannelInfo,
+        _date: chrono::NaiveDate,
     ) -> super::Result<Vec<Message>> {
         unimplemented!()
     }

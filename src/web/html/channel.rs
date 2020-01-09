@@ -1,13 +1,14 @@
 use std::borrow::Cow;
 
 use super::{html, lib, GlobalArgs, Output, PageArgs, PageConfig, RenderOnce};
+use crate::{CategoryId, ChannelId, EmojiId, GuildId, UserId};
 
 pub fn render<'t, Cat, ICatChan>(
     global: &'t GlobalArgs,
     page: PageArgs<'t, impl PageConfig>,
     guild: Guild<'t>,
-    categories: Cat,
-    current_category: ChannelGroup<'t, impl Iterator<Item = Channel<'t>>>,
+    groups: Cat,
+    current_group: &'t Group<'t, ICatChan>,
     current_channel: Channel<'t>,
     date: chrono::NaiveDate,
     messages: impl Iterator<
@@ -15,8 +16,8 @@ pub fn render<'t, Cat, ICatChan>(
     >,
 ) -> Output
 where
-    for<'u> &'u Cat: Iterator<Item = ChannelGroup<'t, ICatChan>>,
-    ICatChan: Iterator<Item = Channel<'t>>,
+    Cat: IntoIterator<Item = &'t Group<'t, ICatChan>> + Copy,
+    ICatChan: IntoIterator<Item = &'t Channel<'t>> + Copy,
 {
     use chrono::Datelike;
 
@@ -50,9 +51,9 @@ where
                 }
                 div {
                     div(id = "categories-dropdown", class = "dropdown-content") {
-                        @ for group in &categories {
+                        @ for group in groups {
                             a(href = "#") {
-                                @ if let Some(cat) = group.category {
+                                @ if let Some(cat) = &group.category {
                                     : cat.name;
                                 } else {
                                     : "(no category)";
@@ -62,15 +63,15 @@ where
                     }
                     ul(id = "channels-dropdown", class = "dropdown-content") {
                         li {
-                            @ for chan in current_category.channels {
+                            @ for chan in current_group.channels {
                                 a(href = format_args!("/guilds/{}/{}", guild.id, chan.id)): format_args!("#{}", chan.name);
                             }
                         }
                     }
                 }
                 ul(class = "sidenav sidenav-fixed", id = "side-channel-list") {
-                    @ for cat in &categories {
-                        @ if let Some(cat) = cat.category {
+                    @ for cat in groups {
+                        @ if let Some(cat) = &cat.category {
                             li {
                                 a(href = "#"): cat.name;
                             }
@@ -141,14 +142,14 @@ where
 
 #[derive(Debug)]
 pub struct Guild<'t> {
-    pub id: u64,
+    pub id: GuildId,
     pub name: &'t str,
 }
 
 #[derive(Debug)]
-pub struct ChannelGroup<'t, IChan>
+pub struct Group<'t, IChan>
 where
-    IChan: Iterator<Item = Channel<'t>>,
+    IChan: IntoIterator<Item = &'t Channel<'t>> + Copy,
 {
     pub category: Option<Category<'t>>,
     pub channels: IChan,
@@ -156,13 +157,13 @@ where
 
 #[derive(Debug)]
 pub struct Category<'t> {
-    pub id: u64,
+    pub id: CategoryId,
     pub name: &'t str,
 }
 
 #[derive(Debug)]
 pub struct Channel<'t> {
-    pub id: u64,
+    pub id: ChannelId,
     pub name: &'t str,
 }
 
@@ -179,7 +180,7 @@ where
 
 pub enum Emoji<'t> {
     Unicode(&'t str),
-    Custom(u64),
+    Custom(EmojiId),
 }
 
 impl<'t> Emoji<'t> {
@@ -195,7 +196,7 @@ impl<'t> Emoji<'t> {
 }
 
 pub struct Author<'t> {
-    pub id: u64,
+    pub id: UserId,
     pub avatar: Option<&'t str>,
     pub name: &'t str,
     pub discrim: &'t str,

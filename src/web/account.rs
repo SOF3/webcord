@@ -39,7 +39,7 @@ pub(super) async fn handler(
     let with_admin = guilds
         .iter()
         .filter(|guild| guild.permissions & 8 == 8)
-        .map(|guild| Ok((guild.id.parse::<u64>()? as GuildId, guild)))
+        .map(|guild| Ok((guild.id.parse::<GuildId>()?, guild)))
         .collect::<Result<HashMap<_, _>, std::num::ParseIntError>>()
         .map_err(global.priv_error("Error loading guild information from Discord"))?;
 
@@ -64,7 +64,7 @@ pub(super) async fn handler(
             config: client::PageConfig {
                 guilds: serde_iter::CloneOnce::from(enabled.iter().map(|guild| {
                     client::GuildEntry {
-                        id: guild.id as u64,
+                        id: guild.id,
                         listed: guild.listed,
                     }
                 })),
@@ -89,13 +89,9 @@ mod client {
 
     #[derive(serde::Serialize)]
     pub(super) struct GuildEntry {
-        #[serde(serialize_with = "u64_to_string")]
-        pub(super) id: u64,
+        #[serde(with = "crate::id_str")]
+        pub(super) id: crate::GuildId,
         pub(super) listed: bool,
-    }
-
-    fn u64_to_string<S: serde::Serializer>(v: &u64, s: S) -> Result<S::Ok, S::Error> {
-        s.serialize_str(&v.to_string())
     }
 
     impl<'t, I> crate::web::html::PageConfig for PageConfig<I>

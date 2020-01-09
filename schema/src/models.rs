@@ -56,7 +56,7 @@ pub struct KnownInvite {
 
 macro_rules! snowflake {
     ($($name:ident)*) => {$(
-        pub type $name = i64;
+        type $name = i64;
     )*};
 }
 snowflake!(GuildId ChannelId MessageId);
