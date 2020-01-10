@@ -71,7 +71,7 @@ dependencies = [
  "mime",
  "percent-encoding 2.1.0",
  "pin-project",
- "rand 0.7.2",
+ "rand 0.7.3",
  "regex",
  "ring",
  "serde 1.0.104",
@@ -374,7 +374,7 @@ dependencies = [
  "log",
  "mime",
  "percent-encoding 2.1.0",
- "rand 0.7.2",
+ "rand 0.7.3",
  "serde 1.0.104",
  "serde_json",
  "serde_urlencoded 0.6.1",
@@ -1896,9 +1896,9 @@ dependencies = [
 
 [[package]]
 name = "rand"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ae1b169243eaf61759b8475a998f0a385e42042370f3a7dbaf35246eacc8412"
+checksum = "6a6b1679d49b24bbfe0c803429aa1874472f50d9b363131f0e89fc356b544d03"
 dependencies = [
  "getrandom",
  "libc",
@@ -2510,7 +2510,7 @@ checksum = "7a6e24d9338a0a5be79593e2fa15a648add6138caa803e2d5bc782c371732ca9"
 dependencies = [
  "cfg-if",
  "libc",
- "rand 0.7.2",
+ "rand 0.7.3",
  "redox_syscall",
  "remove_dir_all",
  "winapi 0.3.8",
@@ -2781,7 +2781,7 @@ dependencies = [
  "idna 0.2.0",
  "lazy_static",
  "log",
- "rand 0.7.2",
+ "rand 0.7.3",
  "smallvec 1.1.0",
  "socket2",
  "tokio 0.2.9",
@@ -2835,7 +2835,7 @@ dependencies = [
  "httparse",
  "input_buffer",
  "log",
- "rand 0.7.2",
+ "rand 0.7.3",
  "sha-1",
  "url 2.1.1",
  "utf-8",
@@ -3120,7 +3120,7 @@ dependencies = [
  "percent-encoding 2.1.0",
  "pretty_env_logger",
  "r2d2",
- "rand 0.7.2",
+ "rand 0.7.3",
  "reqwest 0.10.1",
  "ring",
  "serde 1.0.104",
