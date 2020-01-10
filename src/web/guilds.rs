@@ -14,7 +14,6 @@ pub(super) async fn handler(
     let guilds = block(move || bridge.list_guilds())
         .await
         .map_err(global.priv_error("Error querying Discord API"))?; // TODO paginate
-    dbg!(&guilds);
     let count = guilds.len();
     let rendered = html::guilds::render(
         global.as_ref(),
