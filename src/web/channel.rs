@@ -5,7 +5,7 @@ use std::sync::Arc;
 use actix_web::{web, HttpResponse};
 
 use super::{html, UserResult};
-use crate::index::{ChannelInfo, GuildInfo};
+use crate::discord::{ChannelInfo, GuildInfo};
 use crate::{block, discord, GuildId};
 
 #[actix_web::get("/guilds/{guild}")]
@@ -60,7 +60,7 @@ async fn handler(
 ) -> UserResult<HttpResponse> {
     let guild = {
         let bridge = Arc::clone(&bridge);
-        block(move || bridge.guild_info(guild_id, true))
+        block(move || bridge.guild_info(guild_id))
             .await
             .map_err(global.priv_error_code(404, "Guild does not exist"))?
     };

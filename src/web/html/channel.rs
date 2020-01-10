@@ -178,6 +178,7 @@ where
     pub reactions: IReact,
 }
 
+#[allow(dead_code)]
 pub enum Emoji<'t> {
     Unicode(&'t str),
     Custom(EmojiId),

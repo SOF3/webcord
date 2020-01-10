@@ -1,4 +1,4 @@
-dirmod::all!();
+dirmod::all!(default pub use; default dir pub);
 
 use std::thread;
 

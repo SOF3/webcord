@@ -24,6 +24,7 @@ impl EventHandler for Handler {
         if !is_new {
             return;
         }
+        dbg!(&guild.name);
 
         log::info!("Joined guild {} in {}", &guild.name, &guild.region);
 
@@ -36,5 +37,7 @@ impl EventHandler for Handler {
         // TODO store channels
     }
 
-    // TODO store new channels
+    fn guild_member_removal(&self, _ctx: Context, _guild: model::GuildId, _user: model::User, _member_data: Option<model::Member>) {
+        // TODO if removed member is webcord bot, delete guild
+    }
 }
