@@ -40,6 +40,8 @@ pub struct Guild {
     id: GuildId,
     #[get = "pub"]
     cache_name: String,
+    #[get = "pub"]
+    online: bool,
     #[get_copy = "pub"]
     listed: bool,
 }

@@ -1,10 +1,11 @@
 CREATE TABLE guilds (
 	id BIGINT PRIMARY KEY,
 	cache_name VARCHAR(255) NOT NULL,
+	online BOOLEAN NOT NULL,
 	listed BOOLEAN NOT NULL
 );
 
-CREATE INDEX ON guilds (listed, cache_name);
+CREATE INDEX ON guilds (online, listed, cache_name);
 
 CREATE TABLE channels (
 	id BIGINT PRIMARY KEY,

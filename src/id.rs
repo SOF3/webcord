@@ -15,11 +15,13 @@ macro_rules! make_id {
         ///
         /// - Serenity from/into
         /// - u64 from/into
-        /// - horrorshow rendering (displayed as u64, for use in links
+        /// - horrorshow rendering (displayed as u64, for use in links)
         #[derive(
             Debug, derive_more::Display,
             Clone, Copy,
-            PartialEq, Eq, Hash,
+            PartialEq, Eq,
+            // It doesn't make sense to compare IDs directly, but we might need binary search
+            PartialOrd, Ord, Hash,
         )]
         pub struct $id(u64);
 
@@ -63,18 +65,18 @@ macro_rules! make_id {
             }
         }
 
-        /*impl Deref for $id {
-            type Target = u64;
-
-            fn deref(&self) -> &u64 { &self.0 }
-        }*/
-
         impl FromStr for $id {
             type Err = <u64 as FromStr>::Err;
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
                 <u64 as FromStr>::from_str(s)
                     .map(|u| Self(u))
+            }
+        }
+
+        impl PartialEq<u64> for $id {
+            fn eq(&self, other: &u64) -> bool {
+                self.0 == *other
             }
         }
 
