@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use horrorshow::{RenderOnce, TemplateBuffer};
-use serde::{de::Error, Deserialize, Deserializer};
+use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
 
 pub(crate) trait Snowflake: Copy {
     fn from_raw(u64: u64) -> Self;
@@ -37,6 +37,12 @@ macro_rules! make_id {
 
             fn to_raw(self) -> u64 {
                 self.0
+            }
+        }
+
+        impl Serialize for $id {
+            fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+                serializer.collect_str(&format_args!("{}", self.to_raw()))
             }
         }
 
@@ -103,33 +109,6 @@ macro_rules! make_id {
             }
         )?
     )*};
-}
-
-pub(crate) mod id_str {
-    use serde::Serializer;
-
-    use super::Snowflake;
-
-    pub(crate) fn serialize<S: Serializer>(
-        id: &impl Snowflake,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error> {
-        serializer.collect_str(&format_args!("{}", id.to_raw()))
-    }
-}
-
-#[allow(dead_code)]
-pub(crate) mod id_raw {
-    use serde::Serializer;
-
-    use super::Snowflake;
-
-    pub(crate) fn serialize<S: Serializer>(
-        id: &impl Snowflake,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error> {
-        serializer.serialize_u64(id.to_raw())
-    }
 }
 
 make_id!(GuildId.s ChannelId.s CategoryId MessageId.s UserId.s EmojiId.s);

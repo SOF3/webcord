@@ -2,7 +2,7 @@ use derive_new::new;
 use getset::{CopyGetters, Getters};
 use serenity::model::prelude as smodel;
 
-use crate::{GuildId, ChannelId};
+use crate::{ChannelId, GuildId};
 
 impl super::Bridge {
     pub fn guild_info(&self, guild_id: GuildId) -> super::Result<GuildInfo> {

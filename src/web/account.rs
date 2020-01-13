@@ -89,7 +89,6 @@ mod client {
 
     #[derive(serde::Serialize)]
     pub(super) struct GuildEntry {
-        #[serde(with = "crate::id_str")]
         pub(super) id: crate::GuildId,
         pub(super) listed: bool,
     }

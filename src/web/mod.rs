@@ -62,8 +62,7 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             .app_data(global.clone())
             .wrap(middleware::Logger::default())
             .wrap(middleware::Compress::default())
-            .wrap(middleware::DefaultHeaders::new()
-                  .header("Server", "webcord"))
+            .wrap(middleware::DefaultHeaders::new().header("Server", "webcord"))
             .wrap(CookieSession::private(&entropy_raw).name("wc"))
             .service(index::index)
             .service(assets::script)
@@ -76,6 +75,7 @@ pub async fn run(secrets: Secrets, index: Index, bridge: discord::Bridge) -> io:
             .service(channel::handle_channel)
             .service(channel::handle_date)
             .service(guilds::handler)
+            .service(ws::handler)
             .default_service(
                 web::resource("").route(web::get().to(error404)).route(
                     web::route()

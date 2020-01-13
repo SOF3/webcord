@@ -118,9 +118,4 @@ joinable!(channel_hours -> channels (channel_id));
 joinable!(channels -> guilds (guild_id));
 joinable!(known_invites -> guilds (guild_id));
 
-allow_tables_to_appear_in_same_query!(
-    channel_hours,
-    channels,
-    guilds,
-    known_invites,
-);
+allow_tables_to_appear_in_same_query!(channel_hours, channels, guilds, known_invites,);

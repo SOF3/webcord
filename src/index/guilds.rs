@@ -1,4 +1,4 @@
-use diesel::prelude::{ExpressionMethods, QueryDsl, RunQueryDsl, OptionalExtension};
+use diesel::prelude::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl};
 use webcord_schema::models;
 use webcord_schema::schema::guilds::dsl as guilds;
 
@@ -35,7 +35,11 @@ impl Index {
     }
 
     pub fn guilds_new_join(&self, id: GuildId, name: &str) -> Result<(), QueryError> {
-        let row = guilds::guilds.select(guilds::online).filter(guilds::id.eq(id.to_db())).first::<bool>(&self.0.get()?).optional()?;
+        let row = guilds::guilds
+            .select(guilds::online)
+            .filter(guilds::id.eq(id.to_db()))
+            .first::<bool>(&self.0.get()?)
+            .optional()?;
         match row {
             Some(true) => {
                 log::warn!("Live cache desynchronization: guild {}#{} is joined in database, but Discord resent guild_create event", id, name)
@@ -54,7 +58,10 @@ impl Index {
         Ok(())
     }
 
-    pub fn guilds_update_online(&self, guilds_iter: impl Iterator<Item = GuildId> + Clone) -> Result<(), QueryError> {
+    pub fn guilds_update_online(
+        &self,
+        guilds_iter: impl Iterator<Item = GuildId> + Clone,
+    ) -> Result<(), QueryError> {
         let changed_rows = diesel::update(guilds::guilds)
             .set(guilds::online.eq(guilds::id.eq_any(guilds_iter.clone().map(|id| id.to_db()))))
             .execute(&self.0.get()?)?;
@@ -68,7 +75,10 @@ impl Index {
             .get_result::<i64>(&self.0.get()?)?;
 
         if new_guilds > 0 {
-            log::info!("Dead desynchronization: Joined {} previously unknown guilds", new_guilds);
+            log::info!(
+                "Dead desynchronization: Joined {} previously unknown guilds",
+                new_guilds
+            );
         }
         Ok(())
     }
