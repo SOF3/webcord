@@ -3,7 +3,7 @@ dirmod::all!(default pub use; default dir pub);
 use std::thread;
 
 use serenity::framework::standard::{macros::*, CommandResult, StandardFramework};
-use serenity::http::raw::Http;
+use serenity::http::client::Http;
 use serenity::model::prelude::{self as model, Message};
 use serenity::prelude::*;
 
@@ -47,10 +47,9 @@ impl Bridge {
     }
 }
 
-group!({
-    name: "general",
-    commands: [help],
-});
+#[group]
+#[commands(help)]
+struct General;
 
 #[command]
 fn help(ctx: &mut Context, msg: &Message) -> CommandResult {
