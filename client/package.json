@@ -6,7 +6,7 @@
   "devDependencies": {
     "@types/materialize-css": "^1.0.7",
     "glob": "^7.1.6",
-    "sass": "^1.24.4",
+    "sass": "^1.25.0",
     "typescript": "^3.7.4",
     "uglifycss": "0.0.29",
     "webpack": "^4.41.5",
