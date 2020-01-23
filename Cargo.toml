@@ -42,7 +42,7 @@ ring = "0.16.9"
 rmp-serde = "0.14.0"
 serde = {version = "1.0.104", features = ["std", "derive"]}
 serde_iter = "0.1.1"
-serde_json = "1.0.44"
+serde_json = "1.0.45"
 serenity = "0.8.0"
 typemap = "0.3.3"
 webcord-schema = {path = "schema"}
