@@ -26,7 +26,7 @@ derive_more = "0.99.2"
 diesel = {version = "1.4.3", features = ["postgres", "r2d2", "chrono"]}
 dirmod = "0.2.0-alpha.1"
 dotenv = "0.15.0"
-futures = "0.3.3"
+futures = "0.3.4"
 getset = "0.0.9"
 hex = "0.4.0"
 horrorshow = "0.7.0"
