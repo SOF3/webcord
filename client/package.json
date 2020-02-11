@@ -10,7 +10,7 @@
     "typescript": "^3.7.4",
     "uglifycss": "0.0.29",
     "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "build": "tsc && webpack --config webpack.config.js",
