@@ -14,7 +14,6 @@ env:
     - NODE_VERSION="10.17" RUST_LOG=trace CARGO_FLAGS="--verbose --release"
 
 install:
-  - "export RUSTFLAGS=$(cargo --version | grep nightly >/dev/null && echo \"-Z external-macro-backtrace\")"
   - "rustup component add rustfmt --toolchain $(rustup show active-toolchain | cut -d\" \" -f1)"
   - nvm install $NODE_VERSION
   - "(cd client && npm install)"
