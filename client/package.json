@@ -7,7 +7,7 @@
     "@types/materialize-css": "^1.0.7",
     "glob": "^7.1.6",
     "sass": "^1.25.0",
-    "typescript": "^3.7.4",
+    "typescript": "^3.7.5",
     "uglifycss": "0.0.29",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
