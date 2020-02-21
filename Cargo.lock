@@ -1070,9 +1070,9 @@ checksum = "644f9158b2f133fd50f5fb3242878846d9eb792e445c893805ff0e3824006e35"
 
 [[package]]
 name = "horrorshow"
-version = "0.7.0"
+version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73b84f6f364b9c35c9941a5199de16a0e8725da352eb4d4b1eb0d7179bee697a"
+checksum = "5193e1f03dbec996948ec08831d3a0df72225fc7fab5efc90ebd9bdd9b70504d"
 
 [[package]]
 name = "hostname"
