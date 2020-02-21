@@ -363,9 +363,9 @@ dependencies = [
 
 [[package]]
 name = "async-compression"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c5c52622726d68ec35fec88edfb4ccb862d4f3b3bfa4af2f45142e69ef9b220"
+checksum = "670843da104a1339d46c967382f78d9debb1713aee20e09ba1b25445076f40f4"
 dependencies = [
  "bytes 0.5.3",
  "flate2",
@@ -1808,9 +1808,9 @@ dependencies = [
 
 [[package]]
 name = "reqwest"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0e798e19e258bf6c30a304622e3e9ac820e483b06a1857a026e1f109b113fe4"
+checksum = "bae3fc32eacd4a5200c6b34bd6c057b07fb64f5a1e55bb67d624cc1393354621"
 dependencies = [
  "async-compression",
  "base64 0.11.0",
