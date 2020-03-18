@@ -14,4 +14,4 @@ chrono = "0.4.11"
 derive-new = "0.5.8"
 diesel = { version = "1.4.3", features = ["postgres", "r2d2"] }
 getset = "0.0.9"
-serde = {version = "1.0.104", features = ["std", "derive"]}
+serde = {version = "1.0.105", features = ["std", "derive"]}
