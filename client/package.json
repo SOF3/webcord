@@ -9,7 +9,7 @@
     "sass": "^1.26.3",
     "typescript": "^3.8.3",
     "uglifycss": "0.0.29",
-    "webpack": "^4.42.0",
+    "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
