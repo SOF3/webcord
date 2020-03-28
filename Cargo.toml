@@ -22,7 +22,7 @@ actix-web-actors = "2.0.0"
 chrono = "0.4.11"
 config = "0.10.1"
 derive-new = "0.5.8"
-derive_more = "0.99.3"
+derive_more = "0.99.4"
 diesel = {version = "1.4.4", features = ["postgres", "r2d2", "chrono"]}
 dirmod = "0.2.0-alpha.1"
 dotenv = "0.15.0"
