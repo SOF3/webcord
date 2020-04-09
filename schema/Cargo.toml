@@ -13,5 +13,5 @@ description = "Mirrors Discord chat logs on webpages in a searchable fashion"
 chrono = "0.4.11"
 derive-new = "0.5.8"
 diesel = { version = "1.4.4", features = ["postgres", "r2d2"] }
-getset = "0.0.9"
+getset = "0.1.0"
 serde = {version = "1.0.106", features = ["std", "derive"]}
